@@ -6,7 +6,7 @@ from unittest import TestCase
 import fbs
 import fbs.builtin_commands
 import fbs._state as fbs_state
-import fbs_runtime._state as runtime_state
+from fbs import platform
 import json
 
 class FbsTest(TestCase):
@@ -25,13 +25,13 @@ class FbsTest(TestCase):
         self._update_settings('base.json', {'app_name': 'MyApp'})
         # Save fbs's state:
         self._fbs_state_before = fbs_state.get()
-        self._runtime_state_before = runtime_state.get()
+        self._platform_before = platform.get()
     def init_fbs(self, platform_name=None):
         if platform_name is not None:
-            runtime_state.restore(platform_name, None, None)
+            platform.restore(platform_name, None, None)
         fbs.init(self._project_dir)
     def tearDown(self):
-        runtime_state.restore(*self._runtime_state_before)
+        platform.restore(*self._platform_before)
         fbs_state.restore(*self._fbs_state_before)
         self._tmp_dir.cleanup()
         super().tearDown()

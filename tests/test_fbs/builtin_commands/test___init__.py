@@ -1,6 +1,6 @@
 from fbs import path
 from fbs.builtin_commands import freeze, installer
-from fbs_runtime.platform import is_mac, is_windows, is_linux
+from fbs.platform import is_mac, is_windows, is_linux
 from os import listdir
 from os.path import exists, join
 from tests.test_fbs import FbsTest
