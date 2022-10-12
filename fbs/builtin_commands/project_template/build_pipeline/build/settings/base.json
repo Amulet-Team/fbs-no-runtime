@@ -1,6 +1,6 @@
 {
     "app_name": "${app_name}",
     "author": "${author}",
-    "main_module": "src/main/python/main.py",
+    "main_module": "src/${package_name}/__main__.py",
     "version": "0.0.0"
 }

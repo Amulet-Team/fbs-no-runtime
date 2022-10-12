@@ -1,6 +1,7 @@
-from fbs import path, SETTINGS
+from fbs import path as get_path, SETTINGS
 from fbs.error import FbsError
 from fbs._state import LOADED_PROFILES
+from fbs.paths import get_icon_path
 from glob import glob
 from os import makedirs
 from os.path import dirname, isfile, join, basename, relpath, splitext, exists
@@ -27,10 +28,10 @@ def copy_with_filtering(
     to_copy = _get_files_to_copy(src_dir_or_file, dest_dir, exclude)
     to_filter = _paths(files_to_filter)
     for src, dest in to_copy:
-        makedirs(dirname(dest), exist_ok=True)
-        if files_to_filter is None or src in to_filter:
+        if src in to_filter:
             _copy_with_filtering(src, dest, replacements, placeholder)
         else:
+            makedirs(dirname(dest), exist_ok=True)
             copy(src, dest)
 
 def get_icons():
@@ -40,8 +41,8 @@ def get_icons():
     """
     result = {}
     for profile in LOADED_PROFILES:
-        icons_dir = 'src/main/icons/' + profile
-        for icon_path in glob(path(icons_dir + '/*.png')):
+        icons_dir = f"{get_icon_path()}/{profile}"
+        for icon_path in glob(get_path(icons_dir + '/*.png')):
             name = splitext(basename(icon_path))[0]
             match = re.match('(\d+)(?:@(\d+)x)?', name)
             if not match:
@@ -51,7 +52,7 @@ def get_icons():
     return [(size, scale, path) for (size, scale), path in result.items()]
 
 def _get_files_to_copy(src_dir_or_file, dest_dir, exclude):
-    excludes = _paths(map(path, exclude))
+    excludes = _paths(map(get_path, exclude))
     if isfile(src_dir_or_file) and src_dir_or_file not in excludes:
         yield src_dir_or_file, join(dest_dir, basename(src_dir_or_file))
     else:
@@ -71,7 +72,9 @@ def _copy_with_filtering(
         old = (placeholder % key).encode(encoding)
         new = str(value).encode(encoding)
         replacements.append((old, new))
+        dest_file = dest_file.replace(placeholder % key, str(value))
     with open(src_file, 'rb') as open_src_file:
+        makedirs(dirname(dest_file), exist_ok=True)
         with open(dest_file, 'wb') as open_dest_file:
             for line in open_src_file:
                 new_line = line

@@ -1,7 +1,7 @@
 ![Sample app icon](linux/128.png)
 
 This directory contains the icons that are displayed for your app. Feel free to
-change them by placing your own copies into `src/main/icons` in your project
+change them by placing your own copies into `src/icons` in your project
 directory.
 
 The difference between the icons on Mac and the other platforms is that on Mac,

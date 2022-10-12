@@ -12,6 +12,7 @@ from fbs.upload import _upload_repo
 from fbs.error import FbsError
 from fbs.platform import is_windows, is_mac, is_linux, is_arch_linux, \
     is_ubuntu, is_fedora
+from fbs.paths import BuildPipelineDefault, IconsDefault
 from getpass import getuser
 from importlib.util import find_spec
 from os import listdir, remove, unlink, mkdir
@@ -31,9 +32,10 @@ def startproject():
     """
     Start a new project in the current directory
     """
-    if exists('src'):
-        raise FbsError('The src/ directory already exists. Aborting.')
+    if exists('src') or exists(BuildPipelineDefault) or exists(IconsDefault) or exists("pyproject.toml") or exists("setup.cfg"):
+        raise FbsError(f'The src, {BuildPipelineDefault} or {IconsDefault} directory already exists. Aborting.')
     app = prompt_for_value('App name', default='MyApp')
+    package_name = prompt_for_value('Package name', default='my_app')
     user = getuser().title()
     author = prompt_for_value('Author', default=user)
     eg_bundle_id = 'com.%s.%s' % (
@@ -49,19 +51,20 @@ def startproject():
     copy_with_filtering(
         template_dir, '.', {
             'app_name': app,
+            'package_name': package_name,
             'author': author,
             'mac_bundle_identifier': mac_bundle_identifier,
         },
         files_to_filter=[
-            template_path('src/build/settings/base.json'),
-            template_path('src/build/settings/mac.json'),
-            template_path('src/main/python/main.py')
+            template_path(f'{BuildPipelineDefault}/build/settings/base.json'),
+            template_path(f'{BuildPipelineDefault}/build/settings/mac.json'),
+            template_path('setup.cfg'),
+            template_path('src/${package_name}'),
         ]
     )
     print('')
     _LOG.info(
-        "Created the src/ directory. If you have %s installed, you can now "
-        "do:\n\n    fbs run"
+        f"Created the src, {BuildPipelineDefault} and {IconsDefault} directories. You can now do:\n\n    fbs run"
     )
 
 @command
