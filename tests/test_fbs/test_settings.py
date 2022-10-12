@@ -1,6 +1,7 @@
 from fbs import SETTINGS
 from tests.test_fbs import FbsTest
 
+
 class LinuxSettingsTest(FbsTest):
     def test_default_does_not_overwrite(self):
         # Consider the following scenario: The user sets "url" in base.json
@@ -16,13 +17,13 @@ class LinuxSettingsTest(FbsTest):
         #  2) default linux
         #  3) user base
         #  4) user linux.
-        self._update_settings('base.json', {'url': 'build-system.fman.io'})
+        self._update_settings("base.json", {"url": "build-system.fman.io"})
 
         # The project template's linux.json sets url="". This defeats the
         # purpose of this test. So delete the setting:
-        linux_settings = self._read_settings('linux.json')
-        del linux_settings['url']
-        self._write_settings('linux.json', linux_settings)
+        linux_settings = self._read_settings("linux.json")
+        del linux_settings["url"]
+        self._write_settings("linux.json", linux_settings)
 
-        self.init_fbs('Linux')
-        self.assertEqual('build-system.fman.io', SETTINGS['url'])
+        self.init_fbs("Linux")
+        self.assertEqual("build-system.fman.io", SETTINGS["url"])

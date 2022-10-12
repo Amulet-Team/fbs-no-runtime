@@ -11,6 +11,7 @@ import sys
 
 _LOG = logging.getLogger(__name__)
 
+
 def main(project_dir=None):
     """
     This function is executed when you run `fbs ...` on the command line. You
@@ -28,15 +29,17 @@ def main(project_dir=None):
         from fbs.builtin_commands import _gpg
         from fbs.builtin_commands import _account
         from fbs.builtin_commands import _licensing
+
         fn, args = _parse_cmdline()
         fn(*args)
     except KeyboardInterrupt:
-        print('')
+        print("")
         sys.exit(-1)
     except FbsError as e:
         # Don't print a stack trace for FbsErrors, just their message:
         _LOG.error(str(e))
         sys.exit(-1)
+
 
 def command(f):
     """
@@ -46,40 +49,42 @@ def command(f):
     COMMANDS[f.__name__] = f
     return f
 
+
 def _parse_cmdline():
     parser = _get_cmdline_parser()
     args = parser.parse_args()
-    if hasattr(args, 'fn'):
+    if hasattr(args, "fn"):
         fn_args = []
-        for arg in args.args[:1-len(args.defaults)]:
+        for arg in args.args[: 1 - len(args.defaults)]:
             fn_args.append(getattr(args, arg))
-        for arg, default in zip(args.args[-len(args.defaults):], args.defaults):
+        for arg, default in zip(args.args[-len(args.defaults) :], args.defaults):
             fn_args.append(getattr(args, arg, default))
         return args.fn, fn_args
     return parser.print_help, ()
 
+
 def _get_cmdline_parser():
     # Were we invoked with `python -m fbs`?
-    is_python_m_fbs = splitext(basename(sys.argv[0]))[0] == '__main__'
+    is_python_m_fbs = splitext(basename(sys.argv[0]))[0] == "__main__"
     if is_python_m_fbs:
-        prog = '%s -m fbs' % basename(sys.executable)
+        prog = "%s -m fbs" % basename(sys.executable)
     else:
         prog = None
-    parser = ArgumentParser(prog=prog, description='fbs')
+    parser = ArgumentParser(prog=prog, description="fbs")
     subparsers = parser.add_subparsers()
     for cmd_name, cmd_fn in COMMANDS.items():
         cmd_parser = subparsers.add_parser(cmd_name, help=cmd_fn.__doc__)
         argspec = getfullargspec(cmd_fn)
         args = argspec.args or []
         defaults = argspec.defaults or ()
-        args_without_defaults = args[:1-len(defaults)]
-        args_with_defaults = args[-len(defaults):]
+        args_without_defaults = args[: 1 - len(defaults)]
+        args_with_defaults = args[-len(defaults) :]
         for arg in args_without_defaults:
             cmd_parser.add_argument(arg)
         for arg, default in zip(args_with_defaults, defaults):
             if isinstance(default, bool):
                 cmd_parser.add_argument(
-                    '--' + arg, action='store_' + str(not default).lower()
+                    "--" + arg, action="store_" + str(not default).lower()
                 )
             else:
                 type_ = None if default is None else type(default)

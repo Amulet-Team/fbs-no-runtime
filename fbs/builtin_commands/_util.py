@@ -9,22 +9,19 @@ from pathlib import Path
 import json
 import re
 
-BASE_JSON = 'src/build/settings/base.json'
-SECRET_JSON = 'src/build/settings/secret.json'
+BASE_JSON = "src/build/settings/base.json"
+SECRET_JSON = "src/build/settings/secret.json"
 
-def prompt_for_value(
-    value, optional=False, default='', password=False, choices=()
-):
+
+def prompt_for_value(value, optional=False, default="", password=False, choices=()):
     message = value
     if choices:
-        choices_dict = \
-            OrderedDict((str(i + 1), c) for (i, c) in enumerate(choices))
-        message += ': '
-        message += ' or '.join('%s) %s' % tpl for tpl in choices_dict.items())
+        choices_dict = OrderedDict((str(i + 1), c) for (i, c) in enumerate(choices))
+        message += ": "
+        message += " or ".join("%s) %s" % tpl for tpl in choices_dict.items())
     if default:
-        message += ' [%s] ' % \
-                   (choices.index(default) + 1 if choices else default)
-    message += ': '
+        message += " [%s] " % (choices.index(default) + 1 if choices else default)
+    message += ": "
     prompt = getpass if password else input
     result = prompt(message).strip()
     if not result and default:
@@ -35,6 +32,7 @@ def prompt_for_value(
             result = prompt(message).strip()
     return choices_dict[result] if choices else result
 
+
 def require_existing_project():
     if not exists(path(get_build_path())) or not exists(path(get_icon_path())):
         raise FbsError(
@@ -43,20 +41,21 @@ def require_existing_project():
             "    fbs startproject ?"
         )
 
+
 def require_frozen_app():
-    if not exists(path('${freeze_dir}')):
+    if not exists(path("${freeze_dir}")):
         raise FbsError(
-            'It seems your app has not yet been frozen. Please run:\n'
-            '    fbs freeze'
+            "It seems your app has not yet been frozen. Please run:\n" "    fbs freeze"
         )
 
+
 def require_installer():
-    installer = path('target/${installer}')
+    installer = path("target/${installer}")
     if not exists(installer):
         raise FbsError(
-            'Installer does not exist. Maybe you need to run:\n'
-            '    fbs installer'
+            "Installer does not exist. Maybe you need to run:\n" "    fbs installer"
         )
+
 
 def update_json(f_path, dict_):
     f = Path(f_path)
@@ -69,8 +68,10 @@ def update_json(f_path, dict_):
         new_contents = _update_json_str(contents, dict_)
     f.write_text(new_contents)
 
+
 def is_valid_version(version_str):
-    return bool(re.match(r'\d+\.\d+\.\d+$', version_str))
+    return bool(re.match(r"\d+\.\d+\.\d+$", version_str))
+
 
 def _update_json_str(json_str, dict_):
     if not dict_:
@@ -80,9 +81,10 @@ def _update_json_str(json_str, dict_):
     indent = _infer_indent(json_str)
     return json.dumps(data, indent=indent)
 
+
 def _infer_indent(json_str):
-    start = json_str.find('{')
+    start = json_str.find("{")
     if start == -1:
         return None
-    match = re.search('\n(\\s+)', json_str[start:])
+    match = re.search("\n(\\s+)", json_str[start:])
     return match.group(1) if match else None

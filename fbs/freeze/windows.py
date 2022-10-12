@@ -11,42 +11,50 @@ import os
 import struct
 import sys
 
+
 def freeze_windows(debug=False):
     args = []
-    if not (debug or SETTINGS['show_console_window']):
+    if not (debug or SETTINGS["show_console_window"]):
         # The --windowed flag below prevents us from seeing any console output.
         # We therefore only add it when we're not debugging.
-        args.append('--windowed')
-    args.extend(['--icon', path(f'{get_icon_path()}/Icon.ico')])
+        args.append("--windowed")
+    args.extend(["--icon", path(f"{get_icon_path()}/Icon.ico")])
     for path_fn in default_path, path:
-        _copy(path_fn, 'src/freeze/windows/version_info.py', path('target/PyInstaller'))
-    args.extend(['--version-file', path('target/PyInstaller/version_info.py')])
+        _copy(path_fn, "src/freeze/windows/version_info.py", path("target/PyInstaller"))
+    args.extend(["--version-file", path("target/PyInstaller/version_info.py")])
     run_pyinstaller(args, debug)
     _restore_corrupted_python_dlls()
     _generate_resources()
-    copy(path(f'{get_icon_path()}/Icon.ico'), path('${freeze_dir}'))
+    copy(path(f"{get_icon_path()}/Icon.ico"), path("${freeze_dir}"))
     _add_missing_dlls()
+
 
 def _restore_corrupted_python_dlls():
     # PyInstaller <= 3.4 somehow corrupts python3*.dll - see:
     # https://github.com/pyinstaller/pyinstaller/issues/2526
     # Restore the uncorrupted original:
     python_dlls = (
-        'python%s.dll' % sys.version_info.major,
-        'python%s%s.dll' % (sys.version_info.major, sys.version_info.minor)
+        "python%s.dll" % sys.version_info.major,
+        "python%s%s.dll" % (sys.version_info.major, sys.version_info.minor),
     )
     for dll_name in python_dlls:
         try:
-            remove(path('${freeze_dir}/' + dll_name))
+            remove(path("${freeze_dir}/" + dll_name))
         except FileNotFoundError:
             pass
         else:
-            copy(_find_on_path(dll_name), path('${freeze_dir}'))
+            copy(_find_on_path(dll_name), path("${freeze_dir}"))
+
 
 def _add_missing_dlls():
     for dll_name in (
-        'msvcr100.dll', 'msvcr110.dll', 'msvcp110.dll', 'vcruntime140.dll',
-        'msvcp140.dll', 'concrt140.dll', 'vccorlib140.dll'
+        "msvcr100.dll",
+        "msvcr110.dll",
+        "msvcp110.dll",
+        "vcruntime140.dll",
+        "msvcp140.dll",
+        "concrt140.dll",
+        "vccorlib140.dll",
     ):
         try:
             _add_missing_dll(dll_name)
@@ -57,7 +65,7 @@ def _add_missing_dlls():
                 "https://www.microsoft.com/en-us/download/details.aspx?id=30679"
                 % dll_name
             ) from None
-    for ucrt_dll in ('api-ms-win-crt-multibyte-l1-1-0.dll',):
+    for ucrt_dll in ("api-ms-win-crt-multibyte-l1-1-0.dll",):
         try:
             _add_missing_dll(ucrt_dll)
         except LookupError:
@@ -71,15 +79,16 @@ def _add_missing_dlls():
                 "In both cases, add the directory containing %s to your PATH "
                 "environment variable afterwards. If there are 32 and 64 bit "
                 "versions of the DLL, use the %s bit one (because that's the "
-                "bitness of your current Python interpreter)." % (
-                    ucrt_dll, ucrt_dll, bitness_32_or_64
-                )
+                "bitness of your current Python interpreter)."
+                % (ucrt_dll, ucrt_dll, bitness_32_or_64)
             ) from None
 
+
 def _add_missing_dll(dll_name):
-    freeze_dir = path('${freeze_dir}')
+    freeze_dir = path("${freeze_dir}")
     if not exists(join(freeze_dir, dll_name)):
         copy(_find_on_path(dll_name), freeze_dir)
+
 
 def _find_on_path(file_name):
     path = os.environ.get("PATH", os.defpath)

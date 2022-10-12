@@ -9,8 +9,10 @@ SETTINGS = {}
 LOADED_PROFILES = []
 COMMANDS = OrderedDict()
 
+
 def get():
     return dict(SETTINGS), list(LOADED_PROFILES), dict(COMMANDS)
+
 
 def restore(settings, loaded_profiles, commands):
     SETTINGS.clear()

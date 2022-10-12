@@ -1,5 +1,6 @@
 import json
 
+
 def load_settings(json_paths, base=None):
     """
     Return settings from the given JSON files as a dictionary. This function
@@ -29,7 +30,7 @@ def load_settings(json_paths, base=None):
     else:
         result = dict(base)
     for json_path in json_paths:
-        with open(json_path, 'r', encoding='utf-8') as f:
+        with open(json_path, "r", encoding="utf-8") as f:
             data = json.load(f)
         result = data if result is None else _merge(result, data)
     while True:
@@ -42,19 +43,21 @@ def load_settings(json_paths, base=None):
             break
     return result
 
+
 def expand_placeholders(obj, settings):
     if isinstance(obj, str):
         for key, value in settings.items():
-            obj = obj.replace('${%s}' % key, str(value))
+            obj = obj.replace("${%s}" % key, str(value))
     elif isinstance(obj, list):
         return [expand_placeholders(o, settings) for o in obj]
     elif isinstance(obj, dict):
         return {k: expand_placeholders(v, settings) for k, v in obj.items()}
     return obj
 
+
 def _merge(a, b):
     if type(a) != type(b):
-        raise ValueError('Cannot merge %r and %r' % (a, b))
+        raise ValueError("Cannot merge %r and %r" % (a, b))
     if isinstance(a, list):
         return a + b
     if isinstance(a, dict):

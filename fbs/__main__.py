@@ -5,6 +5,7 @@ import fbs.cmdline
 import logging
 import sys
 
+
 def _main():
     """
     Main entry point for the `fbs` command line script.
@@ -16,6 +17,7 @@ def _main():
     _init_logging()
     fbs.cmdline.main()
 
+
 def _init_logging():
     # Redirect INFO or lower to stdout, WARNING or higher to stderr:
     stdout = _WrappingStreamHandler(sys.stdout)
@@ -25,16 +27,18 @@ def _init_logging():
     stderr = logging.StreamHandler(sys.stderr)
     stderr.setLevel(logging.WARNING)
     logging.basicConfig(
-        level=logging.INFO, format='%(message)s', handlers=(stdout, stderr)
+        level=logging.INFO, format="%(message)s", handlers=(stdout, stderr)
     )
+
 
 class _WrappingStreamHandler(StreamHandler):
     def __init__(self, stream=None, line_length=70):
         super().__init__(stream)
         self._line_length = line_length
+
     def format(self, record):
         result = super().format(record)
-        if not getattr(record, 'wrap', True):
+        if not getattr(record, "wrap", True):
             # Make it possible to prevent wrapping. Eg.:
             #     _LOG.info('Message', extra={'wrap': False})
             return result
@@ -42,9 +46,10 @@ class _WrappingStreamHandler(StreamHandler):
         new_lines = []
         for line in lines:
             new_lines.extend(
-                wrap(line, self._line_length, replace_whitespace=False) or ['']
+                wrap(line, self._line_length, replace_whitespace=False) or [""]
             )
         return self.terminator.join(new_lines)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     _main()
