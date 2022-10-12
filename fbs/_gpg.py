@@ -1,5 +1,5 @@
 from fbs import SETTINGS
-from fbs_runtime import FbsError
+from fbs.error import FbsError
 from subprocess import run, DEVNULL, check_call, check_output, PIPE, \
     CalledProcessError
 

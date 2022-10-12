@@ -1,5 +1,5 @@
 from fbs import path, SETTINGS
-from fbs_runtime import FbsError
+from fbs.error import FbsError
 from fbs._state import LOADED_PROFILES
 from glob import glob
 from os import makedirs

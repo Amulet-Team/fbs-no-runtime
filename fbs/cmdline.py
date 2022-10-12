@@ -1,6 +1,6 @@
 from argparse import ArgumentParser
 from fbs._state import COMMANDS
-from fbs_runtime import FbsError
+from fbs.error import FbsError
 from inspect import getfullargspec
 from os import getcwd
 from os.path import basename, splitext

@@ -1,12 +1,10 @@
 from fbs import _state
 from fbs._state import LOADED_PROFILES
-from fbs_runtime import FbsError, _source
-from fbs_runtime._fbs import get_core_settings, get_default_profiles
-from fbs_runtime._settings import load_settings, expand_placeholders
-from fbs_runtime._source import get_settings_paths
+from fbs.error import FbsError
+from fbs._fbs import get_core_settings, get_default_profiles
+from fbs._settings import load_settings, expand_placeholders
+from fbs._source import get_settings_paths, path as get_path
 from os.path import abspath
-
-import sys
 
 """
 fbs populates SETTINGS with the current build settings. A typical example is
@@ -19,11 +17,6 @@ def init(project_dir):
     Call this if you are invoking neither `fbs` on the command line nor
     fbs.cmdline.main() from Python.
     """
-    if sys.version_info[0] != 3 or sys.version_info[1] not in (5, 6):
-        raise FbsError(
-            'The free version of fbs only supports Python 3.5 and 3.6.\n'
-            'Please obtain fbs Pro from https://build-system.fman.io/pro.'
-        )
     SETTINGS.update(get_core_settings(abspath(project_dir)))
     for profile in get_default_profiles():
         activate_profile(profile)
@@ -56,4 +49,4 @@ def path(path_str):
         error_message = "Cannot call path(...) until fbs.init(...) has been " \
                         "called."
         raise FbsError(error_message) from None
-    return _source.path(project_dir, path_str)
+    return get_path(project_dir, path_str)

@@ -1,5 +1,4 @@
-from fbs_runtime import platform
-from fbs_runtime.platform import is_ubuntu, is_linux, is_arch_linux, is_fedora
+from fbs.platform import is_ubuntu, is_linux, is_arch_linux, is_fedora, name as platform_name
 
 def get_core_settings(project_dir):
     return {
@@ -13,7 +12,7 @@ def get_default_profiles():
     # exploit this by adding secret.json to .gitignore, thus preventing it from
     # being uploaded to services such as GitHub.
     result.append('secret')
-    result.append(platform.name().lower())
+    result.append(platform_name().lower())
     if is_linux():
         if is_ubuntu():
             result.append('ubuntu')

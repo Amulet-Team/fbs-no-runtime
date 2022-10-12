@@ -1,6 +1,6 @@
 from fbs import path
 from fbs.resources import copy_with_filtering
-from fbs_runtime._source import default_path
+from fbs._source import default_path
 from os import makedirs, rename
 from os.path import exists
 from shutil import rmtree, copy

@@ -1,6 +1,6 @@
 from collections import OrderedDict
 from fbs import path
-from fbs_runtime import FbsError
+from fbs.error import FbsError
 from getpass import getpass
 from os.path import exists
 from pathlib import Path

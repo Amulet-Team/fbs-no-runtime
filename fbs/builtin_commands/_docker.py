@@ -2,8 +2,8 @@ from fbs import path, SETTINGS
 from fbs.builtin_commands import require_existing_project
 from fbs.cmdline import command
 from fbs.resources import _copy
-from fbs_runtime import FbsError
-from fbs_runtime._source import default_path
+from fbs.error import FbsError
+from fbs._source import default_path
 from os import listdir
 from os.path import exists
 from shutil import rmtree

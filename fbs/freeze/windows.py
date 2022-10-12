@@ -1,7 +1,7 @@
 from fbs import path, SETTINGS
 from fbs.freeze import run_pyinstaller, _generate_resources
 from fbs.resources import _copy
-from fbs_runtime._source import default_path
+from fbs._source import default_path
 from os import remove
 from os.path import join, exists
 from shutil import copy

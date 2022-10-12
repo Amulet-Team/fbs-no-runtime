@@ -9,8 +9,8 @@ from fbs.builtin_commands._util import prompt_for_value, is_valid_version, \
 from fbs.cmdline import command
 from fbs.resources import copy_with_filtering
 from fbs.upload import _upload_repo
-from fbs_runtime import FbsError
-from fbs_runtime.platform import is_windows, is_mac, is_linux, is_arch_linux, \
+from fbs.error import FbsError
+from fbs.platform import is_windows, is_mac, is_linux, is_arch_linux, \
     is_ubuntu, is_fedora
 from getpass import getuser
 from importlib.util import find_spec
@@ -36,16 +36,6 @@ def startproject():
     app = prompt_for_value('App name', default='MyApp')
     user = getuser().title()
     author = prompt_for_value('Author', default=user)
-    has_pyqt = _has_module('PyQt5')
-    has_pyside = _has_module('PySide2')
-    if has_pyqt and not has_pyside:
-        python_bindings = 'PyQt5'
-    elif not has_pyqt and has_pyside:
-        python_bindings = 'PySide2'
-    else:
-        python_bindings = prompt_for_value(
-            'Qt bindings', choices=('PyQt5', 'PySide2'), default='PyQt5'
-        )
     eg_bundle_id = 'com.%s.%s' % (
         author.lower().split()[0], ''.join(app.lower().split())
     )
@@ -61,7 +51,6 @@ def startproject():
             'app_name': app,
             'author': author,
             'mac_bundle_identifier': mac_bundle_identifier,
-            'python_bindings': python_bindings
         },
         files_to_filter=[
             template_path('src/build/settings/base.json'),
@@ -72,7 +61,7 @@ def startproject():
     print('')
     _LOG.info(
         "Created the src/ directory. If you have %s installed, you can now "
-        "do:\n\n    fbs run", python_bindings
+        "do:\n\n    fbs run"
     )
 
 @command

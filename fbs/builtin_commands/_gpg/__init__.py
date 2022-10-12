@@ -3,7 +3,7 @@ from fbs.builtin_commands._docker import _run_docker
 from fbs.builtin_commands._util import prompt_for_value, update_json, \
     require_existing_project, BASE_JSON, SECRET_JSON
 from fbs.cmdline import command
-from fbs_runtime import FbsError
+from fbs.error import FbsError
 from os import makedirs
 from os.path import dirname, exists
 from pathlib import Path

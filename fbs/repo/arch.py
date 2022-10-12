@@ -1,5 +1,5 @@
 from fbs import path, SETTINGS
-from fbs_runtime import FbsError
+from fbs.error import FbsError
 from os import makedirs
 from os.path import exists, join
 from shutil import rmtree, copy

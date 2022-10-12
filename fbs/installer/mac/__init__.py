@@ -1,6 +1,6 @@
 import platform
 from fbs import path, SETTINGS
-from fbs_runtime.platform import is_mac
+from fbs.platform import is_mac
 from os import replace, remove
 from os.path import join, dirname, exists
 from subprocess import check_call, DEVNULL

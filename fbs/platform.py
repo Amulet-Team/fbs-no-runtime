@@ -1,7 +1,20 @@
-from fbs_runtime import _state, FbsError
+from fbs.error import FbsError
 
 import os
 import sys
+
+PLATFORM_NAME = None
+LINUX_DISTRIBUTION = None
+APPLICATION_CONTEXT = None
+
+def get():
+    return PLATFORM_NAME, LINUX_DISTRIBUTION, APPLICATION_CONTEXT
+
+def restore(platform_name, linux_distribution, application_context):
+    global PLATFORM_NAME, LINUX_DISTRIBUTION, APPLICATION_CONTEXT
+    PLATFORM_NAME = platform_name
+    LINUX_DISTRIBUTION = linux_distribution
+    APPLICATION_CONTEXT = application_context
 
 def is_windows():
     """
@@ -26,9 +39,10 @@ def name():
     Returns 'Windows', 'Mac' or 'Linux', depending on the current OS. If the OS
     can't be determined, FbsError is raised.
     """
-    if _state.PLATFORM_NAME is None:
-        _state.PLATFORM_NAME = _get_name()
-    return _state.PLATFORM_NAME
+    global PLATFORM_NAME
+    if PLATFORM_NAME is None:
+        PLATFORM_NAME = _get_name()
+    return PLATFORM_NAME
 
 def _get_name():
     if sys.platform in ('win32', 'cygwin'):
@@ -58,9 +72,10 @@ def is_fedora():
         return False
 
 def linux_distribution():
-    if _state.LINUX_DISTRIBUTION is None:
-        _state.LINUX_DISTRIBUTION = _get_linux_distribution()
-    return _state.LINUX_DISTRIBUTION
+    global LINUX_DISTRIBUTION
+    if LINUX_DISTRIBUTION is None:
+        LINUX_DISTRIBUTION = _get_linux_distribution()
+    return LINUX_DISTRIBUTION
 
 def _get_linux_distribution():
     if not is_linux():

@@ -1,15 +1,12 @@
 from fbs import path, SETTINGS
 from fbs._state import LOADED_PROFILES
 from fbs.resources import _copy
-from fbs_runtime._fbs import filter_public_settings
-from fbs_runtime._source import default_path
-from fbs_runtime.platform import is_mac
-from os import rename, makedirs
+from fbs._source import default_path
+from fbs.platform import is_mac
+from os import rename
 from os.path import join, dirname
 from pathlib import PurePath
 from subprocess import run
-
-import fbs_runtime._frozen
 
 def run_pyinstaller(extra_args=None, debug=False):
     if extra_args is None:
@@ -42,8 +39,6 @@ def run_pyinstaller(extra_args=None, debug=False):
             # Force generation of an .app bundle. Otherwise, PyInstaller skips
             # it when --debug is given.
             args.append('-w')
-    hook_path = _generate_runtime_hook()
-    args.extend(['--runtime-hook', hook_path])
     args.append(path(SETTINGS['main_module']))
     run(args, check=True)
     output_dir = path('target/' + app_name + ('.app' if is_mac() else ''))
@@ -52,20 +47,6 @@ def run_pyinstaller(extra_args=None, debug=False):
     # some Windows drives, it raises a FileExistsError. So check src != dst:
     if PurePath(output_dir) != PurePath(freeze_dir):
         rename(output_dir, freeze_dir)
-
-def _generate_runtime_hook():
-    makedirs(path('target/PyInstaller'), exist_ok=True)
-    module = fbs_runtime._frozen
-    hook_path = path('target/PyInstaller/fbs_pyinstaller_hook.py')
-    with open(hook_path, 'w') as f:
-        # Inject public settings such as "version" into the binary, so
-        # they're available at run time:
-        f.write('\n'.join([
-            'import importlib',
-            'module = importlib.import_module(%r)' % module.__name__,
-            'module.BUILD_SETTINGS = %r' % filter_public_settings(SETTINGS)
-        ]))
-    return hook_path
 
 def _generate_resources():
     """
