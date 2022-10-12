@@ -1,5 +1,6 @@
 from fbs import path
 from fbs.freeze import _generate_resources, run_pyinstaller
+from fbs.paths import get_icon_path
 from glob import glob
 from os import remove
 from shutil import copy
@@ -7,7 +8,7 @@ from shutil import copy
 def freeze_linux(debug=False):
     run_pyinstaller(debug=debug)
     _generate_resources()
-    copy(path('src/main/icons/Icon.ico'), path('${freeze_dir}'))
+    copy(path(f'{get_icon_path()}/Icon.ico'), path('${freeze_dir}'))
     # For some reason, PyInstaller packages libstdc++.so.6 even though it is
     # available on most Linux distributions. If we include it and run our app on
     # a different Ubuntu version, then Popen(...) calls fail with errors

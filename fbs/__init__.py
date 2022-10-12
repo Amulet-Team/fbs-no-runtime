@@ -38,7 +38,7 @@ def activate_profile(profile_name):
 def path(path_str):
     """
     Return the absolute path of the given file in the project directory. For
-    instance: path('src/main/python'). The `path_str` argument should always use
+    instance: path('src/my_app'). The `path_str` argument should always use
     forward slashes `/`, even on Windows. You can use placeholders to refer to
     settings. For example: path('${freeze_dir}/foo').
     """

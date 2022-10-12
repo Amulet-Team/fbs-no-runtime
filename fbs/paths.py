@@ -25,9 +25,19 @@ IconsDefault = "icons"
 
 @lru_cache
 def get_build_path():
-    return path(_get_paths().get("build_path", BuildPipelineDefault))
+    return _get_paths().get("build_path", BuildPipelineDefault)
 
 
 @lru_cache
 def get_icon_path():
-    return path(_get_paths().get("icons_path", "icons"))
+    return _get_paths().get("icons_path", "icons")
+
+
+@lru_cache
+def get_script_path():
+    raise NotImplementedError
+
+
+@lru_cache
+def get_python_working_directory():
+    return _get_paths().get("python_working_directory", "src")

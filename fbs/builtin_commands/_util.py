@@ -1,6 +1,7 @@
 from collections import OrderedDict
 from fbs import path
 from fbs.error import FbsError
+from fbs.paths import get_build_path, get_icon_path
 from getpass import getpass
 from os.path import exists
 from pathlib import Path
@@ -35,7 +36,7 @@ def prompt_for_value(
     return choices_dict[result] if choices else result
 
 def require_existing_project():
-    if not exists(path('src')):
+    if not exists(path(get_build_path())) or not exists(path(get_icon_path())):
         raise FbsError(
             "Could not find the src/ directory. Are you in the right folder?\n"
             "If yes, did you already run\n"

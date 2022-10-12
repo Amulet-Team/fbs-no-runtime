@@ -12,7 +12,7 @@ from fbs.upload import _upload_repo
 from fbs.error import FbsError
 from fbs.platform import is_windows, is_mac, is_linux, is_arch_linux, \
     is_ubuntu, is_fedora
-from fbs.paths import BuildPipelineDefault, IconsDefault
+from fbs.paths import BuildPipelineDefault, IconsDefault, get_script_path, get_python_working_directory
 from getpass import getuser
 from importlib.util import find_spec
 from os import listdir, remove, unlink, mkdir
@@ -32,7 +32,7 @@ def startproject():
     """
     Start a new project in the current directory
     """
-    if exists('src') or exists(BuildPipelineDefault) or exists(IconsDefault) or exists("pyproject.toml") or exists("setup.cfg"):
+    if exists(get_script_path()) or exists(BuildPipelineDefault) or exists(IconsDefault) or exists("pyproject.toml") or exists("setup.cfg"):
         raise FbsError(f'The src, {BuildPipelineDefault} or {IconsDefault} directory already exists. Aborting.')
     app = prompt_for_value('App name', default='MyApp')
     package_name = prompt_for_value('Package name', default='my_app')
@@ -73,14 +73,8 @@ def run():
     Run your app from source
     """
     require_existing_project()
-    if not _has_module('PyQt5') and not _has_module('PySide2'):
-        raise FbsError(
-            "Couldn't find PyQt5 or PySide2. Maybe you need to:\n"
-            "    pip install PyQt5==5.9.2 or\n"
-            "    pip install PySide2==5.12.2"
-        )
     env = dict(os.environ)
-    pythonpath = path('src/main/python')
+    pythonpath = path(get_python_working_directory())
     old_pythonpath = env.get('PYTHONPATH', '')
     if old_pythonpath:
         pythonpath += os.pathsep + old_pythonpath
@@ -457,7 +451,7 @@ def test():
     Execute your automated tests
     """
     require_existing_project()
-    sys.path.append(path('src/main/python'))
+    sys.path.append(path(get_python_working_directory()))
     suite = TestSuite()
     test_dirs = SETTINGS['test_dirs']
     for test_dir in map(path, test_dirs):

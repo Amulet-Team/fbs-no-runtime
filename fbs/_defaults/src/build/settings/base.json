@@ -1,8 +1,7 @@
 {
     "freeze_dir": "target/${app_name}",
     "test_dirs": [
-        "src/unittest/python",
-        "src/integrationtest/python"
+        "tests"
     ],
     "files_to_filter": [
         "src/build/docker/ubuntu/.bashrc", "src/build/docker/ubuntu/Dockerfile",
