@@ -3,7 +3,7 @@ from fbs._state import LOADED_PROFILES
 from fbs.error import FbsError
 from fbs._fbs import get_core_settings, get_default_profiles
 from fbs._settings import load_settings, expand_placeholders
-from fbs._source import get_settings_paths, path as get_path
+from fbs.paths import fix_path, get_settings_paths
 from os.path import abspath
 
 """
@@ -36,19 +36,3 @@ def activate_profile(profile_name):
     json_paths = get_settings_paths(project_dir, LOADED_PROFILES)
     core_settings = get_core_settings(project_dir)
     SETTINGS.update(load_settings(json_paths, core_settings))
-
-
-def path(path_str):
-    """
-    Return the absolute path of the given file in the project directory. For
-    instance: path('src/my_app'). The `path_str` argument should always use
-    forward slashes `/`, even on Windows. You can use placeholders to refer to
-    settings. For example: path('${freeze_dir}/foo').
-    """
-    path_str = expand_placeholders(path_str, SETTINGS)
-    try:
-        project_dir = SETTINGS["project_dir"]
-    except KeyError:
-        error_message = "Cannot call path(...) until fbs.init(...) has been " "called."
-        raise FbsError(error_message) from None
-    return get_path(project_dir, path_str)

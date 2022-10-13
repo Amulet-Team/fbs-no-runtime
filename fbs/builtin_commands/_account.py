@@ -1,7 +1,8 @@
-from fbs import path, _server
+from fbs import _server
 from fbs.builtin_commands import prompt_for_value, require_existing_project
 from fbs.builtin_commands._util import update_json, SECRET_JSON
 from fbs.cmdline import command
+from fbs.paths import project_path
 
 import logging
 
@@ -42,5 +43,5 @@ def login():
 
 
 def _login(username, password):
-    update_json(path(SECRET_JSON), {"fbs_user": username, "fbs_pass": password})
+    update_json(project_path(SECRET_JSON), {"fbs_user": username, "fbs_pass": password})
     _LOG.info("Saved your username and password to %s.", SECRET_JSON)

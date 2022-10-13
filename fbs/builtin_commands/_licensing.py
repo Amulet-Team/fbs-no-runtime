@@ -1,7 +1,7 @@
-from fbs import path
 from fbs.builtin_commands import prompt_for_value, require_existing_project
 from fbs.builtin_commands._util import update_json, SECRET_JSON, BASE_JSON
 from fbs.cmdline import command
+from fbs.paths import project_path
 
 import json
 import logging
@@ -28,18 +28,18 @@ def init_licensing():
     pubkey_args = {"n": pubkey.n, "e": pubkey.e}
     privkey_args = {attr: getattr(privkey, attr) for attr in ("n", "e", "d", "p", "q")}
     update_json(
-        path(SECRET_JSON),
+        project_path(SECRET_JSON),
         {"licensing_privkey": privkey_args, "licensing_pubkey": pubkey_args},
     )
     try:
-        with open(path(BASE_JSON)) as f:
+        with open(project_path(BASE_JSON)) as f:
             user_base_settings = json.load(f)
     except FileNotFoundError:
         user_base_settings = {}
     public_settings = user_base_settings.get("public_settings", [])
     if "licensing_pubkey" not in public_settings:
         public_settings.append("licensing_pubkey")
-        update_json(path(BASE_JSON), {"public_settings": public_settings})
+        update_json(project_path(BASE_JSON), {"public_settings": public_settings})
         updated_base_json = True
     else:
         updated_base_json = False

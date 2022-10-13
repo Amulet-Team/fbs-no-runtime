@@ -1,4 +1,4 @@
-from fbs import path, SETTINGS
+from fbs import SETTINGS
 from fbs.builtin_commands._docker import _run_docker
 from fbs.builtin_commands._util import (
     prompt_for_value,
@@ -9,7 +9,7 @@ from fbs.builtin_commands._util import (
 )
 from fbs.cmdline import command
 from fbs.error import FbsError
-from fbs.paths import get_build_system_dir
+from fbs.paths import get_build_system_dir, project_path
 from os import makedirs
 from os.path import dirname, exists
 from pathlib import Path
@@ -64,12 +64,12 @@ def gengpgkey():
         "-----BEGIN PGP PRIVATE KEY BLOCK-----\n",
         "-----END PGP PRIVATE KEY BLOCK-----\n",
     )
-    makedirs(path(_DEST_DIR), exist_ok=True)
+    makedirs(project_path(_DEST_DIR), exist_ok=True)
     pubkey_dest = _DEST_DIR + "/" + _PUBKEY_NAME
-    Path(path(pubkey_dest)).write_text(pubkey)
-    Path(path(_DEST_DIR + "/" + _PRIVKEY_NAME)).write_text(privkey)
-    update_json(path(BASE_JSON), {"gpg_key": key, "gpg_name": name})
-    update_json(path(SECRET_JSON), {"gpg_pass": passphrase})
+    Path(project_path(pubkey_dest)).write_text(pubkey)
+    Path(project_path(_DEST_DIR + "/" + _PRIVKEY_NAME)).write_text(privkey)
+    update_json(project_path(BASE_JSON), {"gpg_key": key, "gpg_name": name})
+    update_json(project_path(SECRET_JSON), {"gpg_pass": passphrase})
     _LOG.info(
         "Done. Created %s and ...%s. Also updated %s and ...secret.json with "
         "the values you provided.",

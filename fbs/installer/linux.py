@@ -1,7 +1,8 @@
-from fbs import path, SETTINGS
+from fbs import SETTINGS
 from fbs.installer import _generate_installer_resources
 from fbs.resources import get_icons
 from fbs.platform import is_arch_linux
+from fbs.paths import project_path
 from os import makedirs, remove, rename
 from os.path import join, dirname, exists
 from shutil import copy, rmtree, copytree
@@ -9,12 +10,12 @@ from subprocess import run, DEVNULL
 
 
 def generate_installer_files():
-    if exists(path("target/installer")):
-        rmtree(path("target/installer"))
-    copytree(path("${freeze_dir}"), path("target/installer/opt/${app_name}"))
+    if exists(project_path("target/installer")):
+        rmtree(project_path("target/installer"))
+    copytree(project_path("${freeze_dir}"), project_path("target/installer/opt/${app_name}"))
     _generate_installer_resources()
     # Special handling of the .desktop file: Replace AppName by actual name.
-    apps_dir = path("target/installer/usr/share/applications")
+    apps_dir = project_path("target/installer/usr/share/applications")
     rename(
         join(apps_dir, "AppName.desktop"),
         join(apps_dir, SETTINGS["app_name"] + ".desktop"),
@@ -23,7 +24,7 @@ def generate_installer_files():
 
 
 def run_fpm(output_type):
-    dest = path("target/${installer}")
+    dest = project_path("target/${installer}")
     if exists(dest):
         remove(dest)
     # Lower-case the name to avoid the following fpm warning:
@@ -45,7 +46,7 @@ def run_fpm(output_type):
         "--log",
         "error",
         "-C",
-        path("target/installer"),
+        project_path("target/installer"),
         "-n",
         name,
         "-v",
@@ -79,7 +80,7 @@ def run_fpm(output_type):
 
 
 def _generate_icons():
-    dest_root = path("target/installer/usr/share/icons/hicolor")
+    dest_root = project_path("target/installer/usr/share/icons/hicolor")
     makedirs(dest_root)
     icons_fname = "%s.png" % SETTINGS["app_name"]
     for size, _, icon_path in get_icons():

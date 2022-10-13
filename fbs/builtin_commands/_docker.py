@@ -1,10 +1,9 @@
-from fbs import path, SETTINGS
+from fbs import SETTINGS
 from fbs.builtin_commands import require_existing_project
 from fbs.cmdline import command
 from fbs.resources import _copy
 from fbs.error import FbsError
-from fbs._source import default_path
-from fbs.paths import get_build_system_dir
+from fbs.paths import get_build_system_dir, default_path, project_path
 from os import listdir
 from os.path import exists
 from shutil import rmtree
@@ -23,23 +22,23 @@ def buildvm(name):
     Build a Linux VM. Eg.: buildvm ubuntu
     """
     require_existing_project()
-    build_dir = path("target/%s-docker-image" % name)
+    build_dir = project_path("target/%s-docker-image" % name)
     if exists(build_dir):
         rmtree(build_dir)
-    src_root = f"{get_build_system_dir()}/build/docker"
+    src_root = "${build_system_dir}/build/docker"
     available_vms = set(listdir(default_path(src_root)))
-    if exists(path(src_root)):
-        available_vms.update(listdir(path(src_root)))
+    if exists(project_path(src_root)):
+        available_vms.update(listdir(project_path(src_root)))
     if name not in available_vms:
         raise FbsError(
             "Could not find %s. Available VMs are:%s"
             % (name, "".join(["\n * " + vm for vm in available_vms]))
         )
     src_dir = src_root + "/" + name
-    for path_fn in default_path, path:
+    for path_fn in default_path, project_path:
         _copy(path_fn, src_dir, build_dir)
     settings = SETTINGS["docker_images"].get(name, {})
-    for path_fn in default_path, path:
+    for path_fn in default_path, project_path:
         for p in settings.get("build_files", []):
             _copy(path_fn, p, build_dir)
     args = ["build", "--pull", "-t", _get_docker_id(name), build_dir]
@@ -96,12 +95,12 @@ def _get_docker_mounts(name):
     result = {"target/" + name.lower(): "target"}
     # These directories are created inside the container by `buildvm`:
     ignore = {"target", "venv"}
-    for file_name in listdir(path(".")):
+    for file_name in listdir(project_path(".")):
         if file_name in ignore:
             continue
         result[file_name] = file_name
     path_in_docker = lambda p: "/root/%s/%s" % (SETTINGS["app_name"], p)
-    return {path(src): path_in_docker(dest) for src, dest in result.items()}
+    return {project_path(src): path_in_docker(dest) for src, dest in result.items()}
 
 
 def _get_settings(name):

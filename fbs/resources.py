@@ -1,7 +1,7 @@
-from fbs import path as get_path, SETTINGS
+from fbs import SETTINGS
 from fbs.error import FbsError
 from fbs._state import LOADED_PROFILES
-from fbs.paths import get_icon_dir
+from fbs.paths import get_icon_dir, project_path
 from glob import glob
 from os import makedirs
 from os.path import dirname, isfile, join, basename, relpath, splitext, exists
@@ -47,8 +47,8 @@ def get_icons():
     """
     result = {}
     for profile in LOADED_PROFILES:
-        icons_dir = f"{get_icon_dir()}/{profile}"
-        for icon_path in glob(get_path(icons_dir + "/*.png")):
+        icons_dir = "${icon_dir}/{profile}"
+        for icon_path in glob(project_path(icons_dir + "/*.png")):
             name = splitext(basename(icon_path))[0]
             match = re.match("(\d+)(?:@(\d+)x)?", name)
             if not match:
@@ -59,7 +59,7 @@ def get_icons():
 
 
 def _get_files_to_copy(src_dir_or_file, dest_dir, exclude):
-    excludes = _paths(map(get_path, exclude))
+    excludes = _paths(map(project_path, exclude))
     if isfile(src_dir_or_file) and src_dir_or_file not in excludes:
         yield src_dir_or_file, join(dest_dir, basename(src_dir_or_file))
     else:

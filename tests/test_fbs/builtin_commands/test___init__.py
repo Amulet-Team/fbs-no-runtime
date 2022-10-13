@@ -1,4 +1,4 @@
-from fbs import path
+from fbs.paths import project_path
 from fbs.builtin_commands import freeze, installer
 from fbs.platform import is_mac, is_windows, is_linux
 from os import listdir
@@ -10,16 +10,16 @@ class BuiltInCommandsTest(FbsTest):
     def test_freeze_installer(self):
         freeze()
         if is_mac():
-            executable = path("${freeze_dir}/Contents/MacOS/${app_name}")
+            executable = project_path("${freeze_dir}/Contents/MacOS/${app_name}")
         elif is_windows():
-            executable = path("${freeze_dir}/${app_name}.exe")
+            executable = project_path("${freeze_dir}/${app_name}.exe")
         else:
-            executable = path("${freeze_dir}/${app_name}")
+            executable = project_path("${freeze_dir}/${app_name}")
         self.assertTrue(exists(executable), executable + " does not exist")
         installer()
-        self.assertTrue(exists(path("target/${installer}")))
+        self.assertTrue(exists(project_path("target/${installer}")))
         if is_linux():
-            applications_dir = path("target/installer/usr/share/applications")
+            applications_dir = project_path("target/installer/usr/share/applications")
             self.assertEqual(["MyApp.desktop"], listdir(applications_dir))
             with open(join(applications_dir, "MyApp.desktop")) as f:
                 self.assertIn("MyApp", f.read())

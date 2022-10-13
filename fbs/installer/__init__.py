@@ -1,10 +1,9 @@
-from fbs import path, LOADED_PROFILES
+from fbs import LOADED_PROFILES
 from fbs.resources import _copy
-from fbs._source import default_path
-from fbs.paths import get_build_system_dir
+from fbs.paths import default_path, project_path
 
 
 def _generate_installer_resources():
-    for path_fn in default_path, path:
+    for path_fn in default_path, project_path:
         for profile in LOADED_PROFILES:
-            _copy(path_fn, f"{get_build_system_dir()}/installer/" + profile, path("target/installer"))
+            _copy(path_fn, "${build_system_dir}/installer/" + profile, project_path("target/installer"))

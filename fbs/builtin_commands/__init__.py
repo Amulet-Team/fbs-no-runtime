@@ -3,7 +3,7 @@ This module contains all of fbs's built-in commands. They are invoked when you
 run `fbs <command>` on the command line. But you are also free to import them in
 your Python build script and execute them there.
 """
-from fbs import path, SETTINGS, activate_profile
+from fbs import SETTINGS, activate_profile
 from fbs.builtin_commands._util import (
     prompt_for_value,
     is_valid_version,
@@ -30,6 +30,7 @@ from fbs.paths import (
     get_script_path,
     get_python_working_directory,
     get_build_system_dir,
+    project_path,
 )
 from getpass import getuser
 from importlib.util import find_spec
@@ -104,12 +105,12 @@ def run():
     """
     require_existing_project()
     env = dict(os.environ)
-    pythonpath = path(get_python_working_directory())
+    pythonpath = project_path(get_python_working_directory())
     old_pythonpath = env.get("PYTHONPATH", "")
     if old_pythonpath:
         pythonpath += os.pathsep + old_pythonpath
     env["PYTHONPATH"] = pythonpath
-    subprocess.run([sys.executable, path(SETTINGS["main_module"])], env=env)
+    subprocess.run([sys.executable, project_path(SETTINGS["main_module"])], env=env)
 
 
 @command
@@ -183,7 +184,7 @@ def sign():
         sign_windows()
         _LOG.info(
             "Signed all binary files in %s and its subdirectories.",
-            relpath(path("${freeze_dir}"), path(".")),
+            relpath(project_path("${freeze_dir}"), project_path(".")),
         )
     elif is_mac():
         _LOG.info("fbs does not yet implement `sign` on macOS.")
@@ -318,9 +319,9 @@ def repo():
             "    sudo apt-key del %s\n"
             "    sudo rm /etc/apt/sources.list.d/%s.list\n"
             "    sudo apt-get update",
-            path("target/repo"),
+            project_path("target/repo"),
             pkg_name,
-            path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
+            project_path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
             pkg_name,
             pkg_name,
             gpg_key,
@@ -344,8 +345,8 @@ def repo():
             "    sudo pacman-key --delete %s\n"
             "    sudo mv /etc/pacman.conf.bu /etc/pacman.conf",
             app_name,
-            path("target/repo"),
-            path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
+            project_path("target/repo"),
+            project_path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
             gpg_key,
             pkg_name,
             pkg_name,
@@ -366,7 +367,7 @@ def repo():
             "    sudo dnf remove %s\n"
             "    sudo rm /etc/yum.repos.d/*%s*.repo\n"
             "    sudo rpm --erase gpg-pubkey-%s",
-            path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
+            project_path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
             SETTINGS["project_dir"],
             pkg_name,
             pkg_name,
@@ -517,8 +518,8 @@ def release(version=None):
     finally:
         _LOG.setLevel(log_level)
     upload()
-    base_json = f"{get_build_system_dir()}/build/settings/base.json"
-    update_json(path(base_json), {"version": release_version})
+    base_json = "${build_system_dir}/build/settings/base.json"
+    update_json(project_path(base_json), {"version": release_version})
     _LOG.info("Also, %s was updated with the new version.", base_json)
 
 
@@ -528,10 +529,10 @@ def test():
     Execute your automated tests
     """
     require_existing_project()
-    sys.path.append(path(get_python_working_directory()))
+    sys.path.append(project_path(get_python_working_directory()))
     suite = TestSuite()
     test_dirs = SETTINGS["test_dirs"]
-    for test_dir in map(path, test_dirs):
+    for test_dir in map(project_path, test_dirs):
         sys.path.append(test_dir)
         try:
             dir_names = listdir(test_dir)
@@ -558,14 +559,14 @@ def clean():
     Remove previous build outputs
     """
     try:
-        rmtree(path("target"))
+        rmtree(project_path("target"))
     except FileNotFoundError:
         return
     except OSError:
         # In a docker container, target/ may be mounted so we can't delete it.
         # Delete its contents instead:
-        for f in listdir(path("target")):
-            fpath = join(path("target"), f)
+        for f in listdir(project_path("target")):
+            fpath = join(project_path("target"), f)
             if isdir(fpath):
                 rmtree(fpath, ignore_errors=True)
             elif isfile(fpath):
@@ -578,7 +579,7 @@ def _has_windows_codesigning_certificate():
     assert is_windows()
     from fbs.sign.windows import _CERTIFICATE_PATH
 
-    return exists(path(_CERTIFICATE_PATH))
+    return exists(project_path(_CERTIFICATE_PATH))
 
 
 def _has_module(name):

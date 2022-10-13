@@ -1,7 +1,6 @@
 from collections import OrderedDict
-from fbs import path
 from fbs.error import FbsError
-from fbs.paths import get_build_system_dir, get_icon_dir
+from fbs.paths import get_build_system_dir, get_icon_dir, project_path
 from getpass import getpass
 from os.path import exists
 from pathlib import Path
@@ -9,8 +8,8 @@ from pathlib import Path
 import json
 import re
 
-BASE_JSON = f"{get_build_system_dir()}/build/settings/base.json"
-SECRET_JSON = f"{get_build_system_dir()}/build/settings/secret.json"
+BASE_JSON = "${build_system_dir}/build/settings/base.json"
+SECRET_JSON = "${build_system_dir}/build/settings/secret.json"
 
 
 def prompt_for_value(value, optional=False, default="", password=False, choices=()):
@@ -34,7 +33,7 @@ def prompt_for_value(value, optional=False, default="", password=False, choices=
 
 
 def require_existing_project():
-    if not exists(path(get_build_system_dir())) or not exists(path(get_icon_dir())):
+    if not exists(project_path(get_build_system_dir())) or not exists(project_path(get_icon_dir())):
         raise FbsError(
             f"Could not find the {get_build_system_dir()} or {get_icon_dir()}. Are you in the right folder?\n"
             "If yes, did you already run\n"
@@ -43,14 +42,14 @@ def require_existing_project():
 
 
 def require_frozen_app():
-    if not exists(path("${freeze_dir}")):
+    if not exists(project_path("${freeze_dir}")):
         raise FbsError(
             "It seems your app has not yet been frozen. Please run:\n" "    fbs freeze"
         )
 
 
 def require_installer():
-    installer = path("target/${installer}")
+    installer = project_path("target/${installer}")
     if not exists(installer):
         raise FbsError(
             "Installer does not exist. Maybe you need to run:\n" "    fbs installer"
@@ -62,7 +61,7 @@ def update_json(f_path, dict_):
     try:
         contents = f.read_text()
     except FileNotFoundError:
-        indent = _infer_indent(Path(path(BASE_JSON)).read_text())
+        indent = _infer_indent(Path(project_path(BASE_JSON)).read_text())
         new_contents = json.dumps(dict_, indent=indent)
     else:
         new_contents = _update_json_str(contents, dict_)

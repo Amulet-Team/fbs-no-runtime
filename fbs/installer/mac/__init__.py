@@ -1,6 +1,7 @@
 import platform
-from fbs import path, SETTINGS
+from fbs import SETTINGS
 from fbs.platform import is_mac
+from fbs.paths import project_path
 from os import replace, remove
 from os.path import join, dirname, exists
 from subprocess import check_call, DEVNULL
@@ -8,7 +9,7 @@ from subprocess import check_call, DEVNULL
 
 def create_installer_mac():
     app_name = SETTINGS["app_name"]
-    dest = path("target/${installer}")
+    dest = project_path("target/${installer}")
     dest_existed = exists(dest)
     if dest_existed:
         dest_bu = dest + ".bu"
@@ -26,7 +27,7 @@ def create_installer_mac():
             "0",
             "10",
             dest,
-            path("${freeze_dir}"),
+            project_path("${freeze_dir}"),
         ]
 
         if is_mac():

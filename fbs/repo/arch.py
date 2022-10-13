@@ -1,5 +1,6 @@
-from fbs import path, SETTINGS
+from fbs import SETTINGS
 from fbs.error import FbsError
+from fbs.paths import project_path
 from os import makedirs
 from os.path import exists, join
 from shutil import rmtree, copy
@@ -7,18 +8,18 @@ from subprocess import check_call, DEVNULL
 
 
 def create_repo_arch():
-    if not exists(path("target/${installer}.sig")):
+    if not exists(project_path("target/${installer}.sig")):
         raise FbsError(
             "Installer does not exist or is not signed. Maybe you need to "
             "run:\n"
             "    fbs signinst"
         )
-    dest_dir = path("target/repo")
+    dest_dir = project_path("target/repo")
     if exists(dest_dir):
         rmtree(dest_dir)
     makedirs(dest_dir)
     app_name = SETTINGS["app_name"]
-    pkg_file = path("target/${installer}")
+    pkg_file = project_path("target/${installer}")
     pkg_file_versioned = "%s-%s.pkg.tar.xz" % (app_name, SETTINGS["version"])
     copy(pkg_file, join(dest_dir, pkg_file_versioned))
     copy(pkg_file + ".sig", join(dest_dir, pkg_file_versioned + ".sig"))

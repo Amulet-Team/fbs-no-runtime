@@ -1,6 +1,6 @@
-from fbs import path, SETTINGS
+from fbs import SETTINGS
 from fbs.error import FbsError
-from fbs.paths import get_build_system_dir
+from fbs.paths import get_build_system_dir, project_path
 from os import makedirs
 from os.path import join, splitext, dirname, basename, exists
 from shutil import copy
@@ -10,12 +10,12 @@ import hashlib
 import json
 import os
 
-_CERTIFICATE_PATH = f"{get_build_system_dir()}/sign/windows/certificate.pfx"
+_CERTIFICATE_PATH = "${build_system_dir}/sign/windows/certificate.pfx"
 _TO_SIGN = (".exe", ".cab", ".dll", ".ocx", ".msi", ".xpi")
 
 
 def sign_windows():
-    if not exists(path(_CERTIFICATE_PATH)):
+    if not exists(project_path(_CERTIFICATE_PATH)):
         raise FbsError(
             "Could not find a code signing certificate at:\n    " + _CERTIFICATE_PATH
         )
@@ -25,7 +25,7 @@ def sign_windows():
             f"{get_build_system_dir()}/build/settings/secret.json, .../windows.json or .../base.json."
             % _CERTIFICATE_PATH
         )
-    for subdir, _, files in os.walk(path("${freeze_dir}")):
+    for subdir, _, files in os.walk(project_path("${freeze_dir}")):
         for file_ in files:
             extension = splitext(file_)[1]
             if extension in _TO_SIGN:
@@ -45,7 +45,7 @@ class _SignHelper:
     @classmethod
     def instance(cls):
         if cls._INSTANCE is None:
-            cls._INSTANCE = cls(path("cache/signed"))
+            cls._INSTANCE = cls(project_path("cache/signed"))
         return cls._INSTANCE
 
     def __init__(self, cache_dir):
@@ -90,7 +90,7 @@ class _SignHelper:
 
     def _run_signtool(self, file_path, digest_alg, description="", url=""):
         password = SETTINGS["windows_sign_pass"]
-        args = ["signtool", "sign", "/f", path(_CERTIFICATE_PATH), "/p", password]
+        args = ["signtool", "sign", "/f", project_path(_CERTIFICATE_PATH), "/p", password]
         if "windows_sign_server" in SETTINGS:
             args.extend(["/tr", SETTINGS["windows_sign_server"]])
         if description:

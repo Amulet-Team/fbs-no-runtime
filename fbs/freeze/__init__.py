@@ -1,9 +1,8 @@
-from fbs import path, SETTINGS
+from fbs import SETTINGS
 from fbs._state import LOADED_PROFILES
 from fbs.resources import _copy
-from fbs._source import default_path
 from fbs.platform import is_mac
-from fbs.paths import get_build_system_dir
+from fbs.paths import get_build_system_dir, default_path, project_path
 from os import rename
 from os.path import join
 from pathlib import PurePath
@@ -34,11 +33,11 @@ def run_pyinstaller(extra_args=None, debug=False):
     args.extend(
         [
             "--distpath",
-            path("target"),
+            project_path("target"),
             "--specpath",
-            path("target/PyInstaller"),
+            project_path("target/PyInstaller"),
             "--workpath",
-            path("target/PyInstaller"),
+            project_path("target/PyInstaller"),
         ]
     )
     if debug:
@@ -47,10 +46,10 @@ def run_pyinstaller(extra_args=None, debug=False):
             # Force generation of an .app bundle. Otherwise, PyInstaller skips
             # it when --debug is given.
             args.append("-w")
-    args.append(path(SETTINGS["main_module"]))
+    args.append(project_path(SETTINGS["main_module"]))
     run(args, check=True)
-    output_dir = path("target/" + app_name + (".app" if is_mac() else ""))
-    freeze_dir = path("${freeze_dir}")
+    output_dir = project_path("target/" + app_name + (".app" if is_mac() else ""))
+    freeze_dir = project_path("${freeze_dir}")
     # In most cases, rename(src, dst) silently "works" when src == dst. But on
     # some Windows drives, it raises a FileExistsError. So check src != dst:
     if PurePath(output_dir) != PurePath(freeze_dir):
@@ -64,12 +63,12 @@ def _generate_resources():
     Placeholders such as ${app_name} are automatically replaced by the
     corresponding setting in files on that list.
     """
-    freeze_dir = path("${freeze_dir}")
+    freeze_dir = project_path("${freeze_dir}")
     if is_mac():
         resources_dest_dir = join(freeze_dir, "Contents", "Resources")
     else:
         resources_dest_dir = freeze_dir
-    for path_fn in default_path, path:
+    for path_fn in default_path, project_path:
         for profile in LOADED_PROFILES:
             _copy(path_fn, f"{get_build_system_dir}/main/resources/" + profile, resources_dest_dir)
             _copy(path_fn, f"{get_build_system_dir}/freeze/" + profile, freeze_dir)
