@@ -16,6 +16,11 @@ def create_repo_fedora():
     use_default = not exists(repo_file)
     if use_default:
         repo_file = default_path("${build_system_dir}/repo/fedora/AppName.repo")
-    copy_with_filtering(repo_file, project_path("target/repo"), files_to_filter=[repo_file])
+    copy_with_filtering(
+        repo_file, project_path("target/repo"), files_to_filter=[repo_file]
+    )
     if use_default:
-        rename(project_path("target/repo/AppName.repo"), project_path("target/repo/${app_name}.repo"))
+        rename(
+            project_path("target/repo/AppName.repo"),
+            project_path("target/repo/${app_name}.repo"),
+        )

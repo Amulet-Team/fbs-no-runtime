@@ -90,7 +90,14 @@ class _SignHelper:
 
     def _run_signtool(self, file_path, digest_alg, description="", url=""):
         password = SETTINGS["windows_sign_pass"]
-        args = ["signtool", "sign", "/f", project_path(_CERTIFICATE_PATH), "/p", password]
+        args = [
+            "signtool",
+            "sign",
+            "/f",
+            project_path(_CERTIFICATE_PATH),
+            "/p",
+            password,
+        ]
         if "windows_sign_server" in SETTINGS:
             args.extend(["/tr", SETTINGS["windows_sign_server"]])
         if description:

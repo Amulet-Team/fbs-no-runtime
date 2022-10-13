@@ -12,7 +12,9 @@ from subprocess import run, DEVNULL
 def generate_installer_files():
     if exists(project_path("target/installer")):
         rmtree(project_path("target/installer"))
-    copytree(project_path("${freeze_dir}"), project_path("target/installer/opt/${app_name}"))
+    copytree(
+        project_path("${freeze_dir}"), project_path("target/installer/opt/${app_name}")
+    )
     _generate_installer_resources()
     # Special handling of the .desktop file: Replace AppName by actual name.
     apps_dir = project_path("target/installer/usr/share/applications")

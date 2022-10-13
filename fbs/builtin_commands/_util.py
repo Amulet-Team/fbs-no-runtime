@@ -33,7 +33,10 @@ def prompt_for_value(value, optional=False, default="", password=False, choices=
 
 
 def require_existing_project():
-    if not exists(project_path(get_build_system_dir())) or not exists(project_path(get_icon_dir())):
+    if not (
+        exists(project_path(get_build_system_dir()))
+        and exists(project_path(get_icon_dir()))
+    ):
         raise FbsError(
             f"Could not find the {get_build_system_dir()} or {get_icon_dir()}. Are you in the right folder?\n"
             "If yes, did you already run\n"

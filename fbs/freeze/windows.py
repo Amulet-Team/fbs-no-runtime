@@ -19,7 +19,11 @@ def freeze_windows(debug=False):
         args.append("--windowed")
     args.extend(["--icon", project_path("${icon_dir}/Icon.ico")])
     for path_fn in default_path, project_path:
-        _copy(path_fn, "${build_system_dir}/freeze/windows/version_info.py", project_path("target/PyInstaller"))
+        _copy(
+            path_fn,
+            "${build_system_dir}/freeze/windows/version_info.py",
+            project_path("target/PyInstaller"),
+        )
     args.extend(["--version-file", project_path("target/PyInstaller/version_info.py")])
     run_pyinstaller(args, debug)
     _restore_corrupted_python_dlls()
