@@ -2,7 +2,6 @@ from fbs import SETTINGS
 from fbs.freeze import run_pyinstaller, _generate_resources
 from fbs.resources import _copy
 from fbs.paths import default_path, project_path
-from os import remove
 from os.path import join, exists
 from shutil import copy
 
@@ -26,27 +25,9 @@ def freeze_windows(debug=False):
         )
     args.extend(["--version-file", project_path("target/PyInstaller/version_info.py")])
     run_pyinstaller(args, debug)
-    _restore_corrupted_python_dlls()
     _generate_resources()
     copy(project_path("${icon_dir}/Icon.ico"), project_path("${freeze_dir}"))
     _add_missing_dlls()
-
-
-def _restore_corrupted_python_dlls():
-    # PyInstaller <= 3.4 somehow corrupts python3*.dll - see:
-    # https://github.com/pyinstaller/pyinstaller/issues/2526
-    # Restore the uncorrupted original:
-    python_dlls = (
-        "python%s.dll" % sys.version_info.major,
-        "python%s%s.dll" % (sys.version_info.major, sys.version_info.minor),
-    )
-    for dll_name in python_dlls:
-        try:
-            remove(project_path("${freeze_dir}/" + dll_name))
-        except FileNotFoundError:
-            pass
-        else:
-            copy(_find_on_path(dll_name), project_path("${freeze_dir}"))
 
 
 def _add_missing_dlls():
