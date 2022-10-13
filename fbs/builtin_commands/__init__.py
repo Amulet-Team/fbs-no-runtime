@@ -321,7 +321,7 @@ def repo():
             "    sudo apt-get update",
             project_path("target/repo"),
             pkg_name,
-            project_path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
+            project_path("${build_system_dir}/sign/linux/public-key.gpg"),
             pkg_name,
             pkg_name,
             gpg_key,
@@ -346,7 +346,7 @@ def repo():
             "    sudo mv /etc/pacman.conf.bu /etc/pacman.conf",
             app_name,
             project_path("target/repo"),
-            project_path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
+            project_path("${build_system_dir}/sign/linux/public-key.gpg"),
             gpg_key,
             pkg_name,
             pkg_name,
@@ -367,7 +367,7 @@ def repo():
             "    sudo dnf remove %s\n"
             "    sudo rm /etc/yum.repos.d/*%s*.repo\n"
             "    sudo rpm --erase gpg-pubkey-%s",
-            project_path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
+            project_path("${build_system_dir}/sign/linux/public-key.gpg"),
             SETTINGS["project_dir"],
             pkg_name,
             pkg_name,

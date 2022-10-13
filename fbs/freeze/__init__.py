@@ -70,5 +70,5 @@ def _generate_resources():
         resources_dest_dir = freeze_dir
     for path_fn in default_path, project_path:
         for profile in LOADED_PROFILES:
-            _copy(path_fn, f"{get_build_system_dir}/main/resources/" + profile, resources_dest_dir)
-            _copy(path_fn, f"{get_build_system_dir}/freeze/" + profile, freeze_dir)
+            _copy(path_fn, "${build_system_dir}/main/resources/" + profile, resources_dest_dir)
+            _copy(path_fn, "${build_system_dir}/freeze/" + profile, freeze_dir)

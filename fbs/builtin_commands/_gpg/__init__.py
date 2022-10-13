@@ -19,7 +19,7 @@ import logging
 
 _LOG = logging.getLogger(__name__)
 _DOCKER_IMAGE = "fbs/gpg-generator"
-_DEST_DIR = f"{get_build_system_dir}/sign/linux"
+_DEST_DIR = "${build_system_dir}/sign/linux"
 _PUBKEY_NAME = "public-key.gpg"
 _PRIVKEY_NAME = "private-key.gpg"
 
@@ -30,7 +30,7 @@ def gengpgkey():
     Generate a GPG key for Linux code signing
     """
     require_existing_project()
-    if exists(_DEST_DIR):
+    if exists(project_path(_DEST_DIR)):
         raise FbsError("The %s folder already exists. Aborting." % _DEST_DIR)
     try:
         email = prompt_for_value("Email address")

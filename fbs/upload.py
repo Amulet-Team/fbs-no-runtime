@@ -36,7 +36,7 @@ def _upload_repo(username, password):
             upload_folder_contents(project_path("target/repo"), repo_dest, *credentials)
         )
         pubkey_dest = dest_path("public-key.gpg")
-        upload_file(project_path(f"{get_build_system_dir}/sign/linux/public-key.gpg"), pubkey_dest, *credentials)
+        upload_file(project_path("${build_system_dir}/sign/linux/public-key.gpg"), pubkey_dest, *credentials)
         uploaded.append(pubkey_dest)
     status, response = _server.post_json(
         "complete_upload",
