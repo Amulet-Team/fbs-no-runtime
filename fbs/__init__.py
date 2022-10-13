@@ -3,7 +3,12 @@ from fbs._state import LOADED_PROFILES
 from fbs.error import FbsError
 from fbs._fbs import get_core_settings, get_default_profiles
 from fbs._settings import load_settings, expand_placeholders
-from fbs.paths import fix_path, get_settings_paths, get_configurable_settings, get_project_root
+from fbs.paths import (
+    fix_path,
+    get_settings_paths,
+    get_configurable_settings,
+    get_project_root,
+)
 from os.path import abspath
 
 """

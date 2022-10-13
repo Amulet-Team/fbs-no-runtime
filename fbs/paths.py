@@ -55,7 +55,7 @@ def get_script_path() -> str:
 
 @lru_cache
 def get_python_path() -> str:
-    """Get the path """
+    """Get the path that python should run from."""
     return SETTINGS["python_path"]
 
 
@@ -85,7 +85,9 @@ def get_project_root() -> str:
     try:
         return SETTINGS["project_dir"]
     except KeyError:
-        error_message = "Cannot call project_path(...) until fbs.init(...) has been " "called."
+        error_message = (
+            "Cannot call project_path(...) until fbs.init(...) has been " "called."
+        )
         raise FbsError(error_message) from None
 
 
