@@ -1,5 +1,5 @@
 from fbs.resources import copy_with_filtering
-from fbs.paths import get_build_system_dir, default_path, project_path
+from fbs.paths import default_path, project_path
 from os import makedirs, rename
 from os.path import exists
 from shutil import rmtree, copy

@@ -3,7 +3,7 @@ from fbs.builtin_commands import require_existing_project
 from fbs.cmdline import command
 from fbs.resources import _copy
 from fbs.error import FbsError
-from fbs.paths import get_build_system_dir, default_path, project_path
+from fbs.paths import default_path, project_path
 from os import listdir
 from os.path import exists
 from shutil import rmtree

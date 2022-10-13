@@ -1,7 +1,7 @@
 from fbs import SETTINGS
 from fbs.freeze import run_pyinstaller, _generate_resources
 from fbs.resources import _copy
-from fbs.paths import get_icon_dir, get_build_system_dir, default_path, project_path
+from fbs.paths import default_path, project_path
 from os import remove
 from os.path import join, exists
 from shutil import copy

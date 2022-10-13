@@ -1,7 +1,7 @@
 from fbs import SETTINGS
 from fbs.error import FbsError
 from fbs._state import LOADED_PROFILES
-from fbs.paths import get_icon_dir, project_path
+from fbs.paths import project_path
 from glob import glob
 from os import makedirs
 from os.path import dirname, isfile, join, basename, relpath, splitext, exists
