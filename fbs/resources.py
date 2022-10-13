@@ -1,7 +1,7 @@
 from fbs import path as get_path, SETTINGS
 from fbs.error import FbsError
 from fbs._state import LOADED_PROFILES
-from fbs.paths import get_icon_path
+from fbs.paths import get_icon_dir
 from glob import glob
 from os import makedirs
 from os.path import dirname, isfile, join, basename, relpath, splitext, exists
@@ -47,7 +47,7 @@ def get_icons():
     """
     result = {}
     for profile in LOADED_PROFILES:
-        icons_dir = f"{get_icon_path()}/{profile}"
+        icons_dir = f"{get_icon_dir()}/{profile}"
         for icon_path in glob(get_path(icons_dir + "/*.png")):
             name = splitext(basename(icon_path))[0]
             match = re.match("(\d+)(?:@(\d+)x)?", name)

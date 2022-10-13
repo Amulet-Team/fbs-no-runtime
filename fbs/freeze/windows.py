@@ -2,7 +2,7 @@ from fbs import path, SETTINGS
 from fbs.freeze import run_pyinstaller, _generate_resources
 from fbs.resources import _copy
 from fbs._source import default_path
-from fbs.paths import get_icon_path
+from fbs.paths import get_icon_dir
 from os import remove
 from os.path import join, exists
 from shutil import copy
@@ -18,14 +18,14 @@ def freeze_windows(debug=False):
         # The --windowed flag below prevents us from seeing any console output.
         # We therefore only add it when we're not debugging.
         args.append("--windowed")
-    args.extend(["--icon", path(f"{get_icon_path()}/Icon.ico")])
+    args.extend(["--icon", path(f"{get_icon_dir()}/Icon.ico")])
     for path_fn in default_path, path:
         _copy(path_fn, "src/freeze/windows/version_info.py", path("target/PyInstaller"))
     args.extend(["--version-file", path("target/PyInstaller/version_info.py")])
     run_pyinstaller(args, debug)
     _restore_corrupted_python_dlls()
     _generate_resources()
-    copy(path(f"{get_icon_path()}/Icon.ico"), path("${freeze_dir}"))
+    copy(path(f"{get_icon_dir()}/Icon.ico"), path("${freeze_dir}"))
     _add_missing_dlls()
 
 

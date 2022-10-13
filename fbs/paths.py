@@ -19,17 +19,17 @@ def _get_paths() -> dict:
     return _paths
 
 
-BuildPipelineDefault = "build_pipeline"
+BuildSystemDefault = "build_system"
 IconsDefault = "icons"
 
 
 @lru_cache
-def get_build_path():
-    return _get_paths().get("build_path", BuildPipelineDefault)
+def get_build_system_dir():
+    return _get_paths().get("build_path", BuildSystemDefault)
 
 
 @lru_cache
-def get_icon_path():
+def get_icon_dir():
     return _get_paths().get("icons_path", "icons")
 
 

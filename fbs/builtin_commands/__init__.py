@@ -25,7 +25,7 @@ from fbs.platform import (
     is_fedora,
 )
 from fbs.paths import (
-    BuildPipelineDefault,
+    BuildSystemDefault,
     IconsDefault,
     get_script_path,
     get_python_working_directory,
@@ -52,13 +52,13 @@ def startproject():
     """
     if (
         exists(get_script_path())
-        or exists(BuildPipelineDefault)
+        or exists(BuildSystemDefault)
         or exists(IconsDefault)
         or exists("pyproject.toml")
         or exists("setup.cfg")
     ):
         raise FbsError(
-            f"The src, {BuildPipelineDefault} or {IconsDefault} directory already exists. Aborting."
+            f"The src, {BuildSystemDefault} or {IconsDefault} directory already exists. Aborting."
         )
     app = prompt_for_value("App name", default="MyApp")
     package_name = prompt_for_value("Package name", default="my_app")
@@ -84,15 +84,15 @@ def startproject():
             "mac_bundle_identifier": mac_bundle_identifier,
         },
         files_to_filter=[
-            template_path(f"{BuildPipelineDefault}/build/settings/base.json"),
-            template_path(f"{BuildPipelineDefault}/build/settings/mac.json"),
+            template_path(f"{BuildSystemDefault}/build/settings/base.json"),
+            template_path(f"{BuildSystemDefault}/build/settings/mac.json"),
             template_path("setup.cfg"),
             template_path("src/${package_name}"),
         ],
     )
     print("")
     _LOG.info(
-        f"Created the src, {BuildPipelineDefault} and {IconsDefault} directories. You can now do:\n\n    fbs run"
+        f"Created the src, {BuildSystemDefault} and {IconsDefault} directories. You can now do:\n\n    fbs run"
     )
 
 
