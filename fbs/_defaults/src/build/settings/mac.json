@@ -3,7 +3,7 @@
     "mac_bundle_identifier": "",
     "installer": "${app_name}.dmg",
     "files_to_filter": [
-        "src/freeze/mac/Contents/Info.plist"
+        "${build_system_dir}/freeze/mac/Contents/Info.plist"
     ],
     "show_console_window": false
 }

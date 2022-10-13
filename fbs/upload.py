@@ -2,6 +2,7 @@ from fbs import _server, SETTINGS, path
 from fbs._aws import upload_file, upload_folder_contents
 from fbs.error import FbsError
 from fbs.platform import is_linux
+from fbs.paths import get_build_system_dir
 from os.path import basename
 
 import json
@@ -35,7 +36,7 @@ def _upload_repo(username, password):
             upload_folder_contents(path("target/repo"), repo_dest, *credentials)
         )
         pubkey_dest = dest_path("public-key.gpg")
-        upload_file(path("src/sign/linux/public-key.gpg"), pubkey_dest, *credentials)
+        upload_file(path(f"{get_build_system_dir}/sign/linux/public-key.gpg"), pubkey_dest, *credentials)
         uploaded.append(pubkey_dest)
     status, response = _server.post_json(
         "complete_upload",

@@ -8,7 +8,7 @@ from os.path import abspath
 
 """
 fbs populates SETTINGS with the current build settings. A typical example is
-SETTINGS['app_name'], which you define in src/build/settings/base.json.
+SETTINGS['app_name'], which you define in build_system/build/settings/base.json.
 """
 SETTINGS = _state.SETTINGS
 
@@ -26,7 +26,7 @@ def init(project_dir):
 def activate_profile(profile_name):
     """
     By default, fbs only loads some settings. For instance,
-    src/build/settings/base.json and .../`os`.json where `os` is one of "mac",
+    build_system/build/settings/base.json and .../`os`.json where `os` is one of "mac",
     "linux" or "windows". This function lets you load other settings on the fly.
     A common example would be during a release, where release.json contains the
     production server URL instead of a staging server.

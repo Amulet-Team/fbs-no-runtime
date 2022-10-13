@@ -25,10 +25,7 @@ def load_settings(json_paths, base=None):
 
         { "hidden_imports": ["a", "b'] }.
     """
-    if base is None:
-        result = None
-    else:
-        result = dict(base)
+    result = None if base is None else dict(base)
     for json_path in json_paths:
         with open(json_path, "r", encoding="utf-8") as f:
             data = json.load(f)

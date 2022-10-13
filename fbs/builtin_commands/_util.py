@@ -9,8 +9,8 @@ from pathlib import Path
 import json
 import re
 
-BASE_JSON = "src/build/settings/base.json"
-SECRET_JSON = "src/build/settings/secret.json"
+BASE_JSON = f"{get_build_system_dir()}/build/settings/base.json"
+SECRET_JSON = f"{get_build_system_dir()}/build/settings/secret.json"
 
 
 def prompt_for_value(value, optional=False, default="", password=False, choices=()):
@@ -36,7 +36,7 @@ def prompt_for_value(value, optional=False, default="", password=False, choices=
 def require_existing_project():
     if not exists(path(get_build_system_dir())) or not exists(path(get_icon_dir())):
         raise FbsError(
-            "Could not find the src/ directory. Are you in the right folder?\n"
+            f"Could not find the {get_build_system_dir()} or {get_icon_dir()}. Are you in the right folder?\n"
             "If yes, did you already run\n"
             "    fbs startproject ?"
         )

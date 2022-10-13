@@ -2,7 +2,7 @@
 This module contains functions that should only be called by module `fbs`, or
 when running from source.
 """
-
+from fbs.paths import get_build_system_dir
 from os.path import join, normpath, dirname, exists
 
 
@@ -11,7 +11,7 @@ def get_settings_paths(project_dir, profiles):
         filter(
             exists,
             (
-                path_fn("src/build/settings/%s.json" % profile)
+                path_fn(f"{get_build_system_dir()}/build/settings/%s.json" % profile)
                 for path_fn in (default_path, lambda p: path(project_dir, p))
                 for profile in profiles
             ),

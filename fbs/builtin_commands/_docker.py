@@ -4,6 +4,7 @@ from fbs.cmdline import command
 from fbs.resources import _copy
 from fbs.error import FbsError
 from fbs._source import default_path
+from fbs.paths import get_build_system_dir
 from os import listdir
 from os.path import exists
 from shutil import rmtree
@@ -25,7 +26,7 @@ def buildvm(name):
     build_dir = path("target/%s-docker-image" % name)
     if exists(build_dir):
         rmtree(build_dir)
-    src_root = "src/build/docker"
+    src_root = f"{get_build_system_dir()}/build/docker"
     available_vms = set(listdir(default_path(src_root)))
     if exists(path(src_root)):
         available_vms.update(listdir(path(src_root)))

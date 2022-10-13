@@ -29,6 +29,7 @@ from fbs.paths import (
     IconsDefault,
     get_script_path,
     get_python_working_directory,
+    get_build_system_dir,
 )
 from getpass import getuser
 from importlib.util import find_spec
@@ -126,8 +127,8 @@ def freeze(debug=False):
     if not is_valid_version(version):
         raise FbsError(
             "Invalid version detected in settings. It should be three\n"
-            'numbers separated by dots, such as "1.2.3". You have:\n\t"%s".\n'
-            "Usually, this can be fixed in src/build/settings/base.json." % version
+            f'numbers separated by dots, such as "1.2.3". You have:\n\t"{version}".\n'
+            f"Usually, this can be fixed in {get_build_system_dir()}/build/settings/base.json."
         )
     # Import respective functions late to avoid circular import
     # fbs <-> fbs.freeze.X.
@@ -294,7 +295,7 @@ def repo():
             "GPG key for code signing is not configured. You might want to "
             "either\n"
             "    1) run `fbs gengpgkey` or\n"
-            '    2) set "gpg_key" and "gpg_pass" in src/build/settings/.'
+            f'    2) set "gpg_key" and "gpg_pass" in {get_build_system_dir()}/build/settings/.'
         )
     if is_ubuntu():
         from fbs.repo.ubuntu import create_repo_ubuntu
@@ -302,7 +303,7 @@ def repo():
         if not SETTINGS["description"]:
             _LOG.info(
                 'Hint: Your app\'s "description" is empty. Consider setting it '
-                "in src/build/settings/linux.json."
+                f"in {get_build_system_dir()}/build/settings/linux.json."
             )
         create_repo_ubuntu()
         _LOG.info(
@@ -319,7 +320,7 @@ def repo():
             "    sudo apt-get update",
             path("target/repo"),
             pkg_name,
-            path("src/sign/linux/public-key.gpg"),
+            path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
             pkg_name,
             pkg_name,
             gpg_key,
@@ -344,7 +345,7 @@ def repo():
             "    sudo mv /etc/pacman.conf.bu /etc/pacman.conf",
             app_name,
             path("target/repo"),
-            path("src/sign/linux/public-key.gpg"),
+            path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
             gpg_key,
             pkg_name,
             pkg_name,
@@ -365,7 +366,7 @@ def repo():
             "    sudo dnf remove %s\n"
             "    sudo rm /etc/yum.repos.d/*%s*.repo\n"
             "    sudo rpm --erase gpg-pubkey-%s",
-            path("src/sign/linux/public-key.gpg"),
+            path(f"{get_build_system_dir}/sign/linux/public-key.gpg"),
             SETTINGS["project_dir"],
             pkg_name,
             pkg_name,
@@ -516,7 +517,7 @@ def release(version=None):
     finally:
         _LOG.setLevel(log_level)
     upload()
-    base_json = "src/build/settings/base.json"
+    base_json = f"{get_build_system_dir()}/build/settings/base.json"
     update_json(path(base_json), {"version": release_version})
     _LOG.info("Also, %s was updated with the new version.", base_json)
 

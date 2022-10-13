@@ -1,5 +1,6 @@
 from fbs import path, SETTINGS
 from fbs.error import FbsError
+from fbs.paths import get_build_system_dir
 from os import makedirs
 from os.path import join, splitext, dirname, basename, exists
 from shutil import copy
@@ -9,7 +10,7 @@ import hashlib
 import json
 import os
 
-_CERTIFICATE_PATH = "src/sign/windows/certificate.pfx"
+_CERTIFICATE_PATH = f"{get_build_system_dir()}/sign/windows/certificate.pfx"
 _TO_SIGN = (".exe", ".cab", ".dll", ".ocx", ".msi", ".xpi")
 
 
@@ -21,7 +22,7 @@ def sign_windows():
     if "windows_sign_pass" not in SETTINGS:
         raise FbsError(
             "Please set 'windows_sign_pass' to the password of %s in either "
-            "src/build/settings/secret.json, .../windows.json or .../base.json."
+            f"{get_build_system_dir()}/build/settings/secret.json, .../windows.json or .../base.json."
             % _CERTIFICATE_PATH
         )
     for subdir, _, files in os.walk(path("${freeze_dir}")):

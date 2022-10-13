@@ -1,8 +1,8 @@
 {
     "installer": "${app_name}Setup.exe",
     "files_to_filter": [
-        "src/freeze/windows/version_info.py",
-        "src/installer/windows/Installer.nsi"
+        "${build_system_dir}/freeze/windows/version_info.py",
+        "${build_system_dir}/installer/windows/Installer.nsi"
     ],
     "show_console_window": false,
     "url": ""

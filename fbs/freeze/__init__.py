@@ -3,8 +3,9 @@ from fbs._state import LOADED_PROFILES
 from fbs.resources import _copy
 from fbs._source import default_path
 from fbs.platform import is_mac
+from fbs.paths import get_build_system_dir
 from os import rename
-from os.path import join, dirname
+from os.path import join
 from pathlib import PurePath
 from subprocess import run
 
@@ -70,5 +71,5 @@ def _generate_resources():
         resources_dest_dir = freeze_dir
     for path_fn in default_path, path:
         for profile in LOADED_PROFILES:
-            _copy(path_fn, "src/main/resources/" + profile, resources_dest_dir)
-            _copy(path_fn, "src/freeze/" + profile, freeze_dir)
+            _copy(path_fn, f"{get_build_system_dir}/main/resources/" + profile, resources_dest_dir)
+            _copy(path_fn, f"{get_build_system_dir}/freeze/" + profile, freeze_dir)

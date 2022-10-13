@@ -5,16 +5,21 @@ from fbs.platform import (
     is_fedora,
     name as platform_name,
 )
+from fbs.paths import get_build_system_dir, get_icon_dir
 
 
 def get_core_settings(project_dir):
-    return {"project_dir": project_dir}
+    return {
+        "project_dir": project_dir,
+        "build_system_dir": get_build_system_dir(),
+        "icon_dir": get_icon_dir(),
+    }
 
 
 def get_default_profiles():
     result = ["base"]
     # The "secret" profile lets the user store sensitive settings such as
-    # passwords in src/build/settings/secret.json. When using Git, the user can
+    # passwords in build_system/build/settings/secret.json. When using Git, the user can
     # exploit this by adding secret.json to .gitignore, thus preventing it from
     # being uploaded to services such as GitHub.
     result.append("secret")

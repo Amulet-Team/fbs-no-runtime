@@ -9,6 +9,7 @@ from fbs.builtin_commands._util import (
 )
 from fbs.cmdline import command
 from fbs.error import FbsError
+from fbs.paths import get_build_system_dir
 from os import makedirs
 from os.path import dirname, exists
 from pathlib import Path
@@ -18,7 +19,7 @@ import logging
 
 _LOG = logging.getLogger(__name__)
 _DOCKER_IMAGE = "fbs/gpg-generator"
-_DEST_DIR = "src/sign/linux"
+_DEST_DIR = f"{get_build_system_dir}/sign/linux"
 _PUBKEY_NAME = "public-key.gpg"
 _PRIVKEY_NAME = "private-key.gpg"
 
