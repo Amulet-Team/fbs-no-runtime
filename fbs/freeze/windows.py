@@ -1,5 +1,5 @@
 from fbs import SETTINGS
-from fbs.freeze import run_pyinstaller, _generate_resources
+from fbs.freeze import run_pyinstaller
 from fbs.resources import _copy
 from fbs.paths import default_path, project_path
 from os.path import join, exists
@@ -25,7 +25,6 @@ def freeze_windows(debug=False):
         )
     args.extend(["--version-file", project_path("target/PyInstaller/version_info.py")])
     run_pyinstaller(args, debug)
-    _generate_resources()
     copy(project_path("${icon_dir}/Icon.ico"), project_path("${freeze_dir}"))
     _add_missing_dlls()
 

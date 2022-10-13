@@ -1,5 +1,5 @@
 from fbs import SETTINGS
-from fbs.freeze import _generate_resources, run_pyinstaller
+from fbs.freeze import run_pyinstaller
 from fbs.resources import get_icons
 from fbs.paths import project_path
 from os import makedirs, unlink, rename, symlink
@@ -22,7 +22,6 @@ def freeze_mac(debug=False):
     run_pyinstaller(args, debug)
     _remove_unwanted_pyinstaller_files()
     _fix_sparkle_delta_updates()
-    _generate_resources()
 
 
 def _generate_iconset():
