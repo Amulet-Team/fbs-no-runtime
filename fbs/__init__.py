@@ -3,7 +3,7 @@ from fbs._state import LOADED_PROFILES
 from fbs.error import FbsError
 from fbs._fbs import get_core_settings, get_default_profiles
 from fbs._settings import load_settings, expand_placeholders
-from fbs.paths import fix_path, get_settings_paths
+from fbs.paths import fix_path, get_settings_paths, get_configurable_settings, get_project_root
 from os.path import abspath
 
 """
@@ -19,6 +19,7 @@ def init(project_dir):
     fbs.cmdline.main() from Python.
     """
     SETTINGS.update(get_core_settings(abspath(project_dir)))
+    SETTINGS.update(get_configurable_settings())
     for profile in get_default_profiles():
         activate_profile(profile)
 
@@ -32,7 +33,7 @@ def activate_profile(profile_name):
     production server URL instead of a staging server.
     """
     LOADED_PROFILES.append(profile_name)
-    project_dir = SETTINGS["project_dir"]
-    json_paths = get_settings_paths(project_dir, LOADED_PROFILES)
+    json_paths = get_settings_paths(LOADED_PROFILES)
+    project_dir = get_project_root()
     core_settings = get_core_settings(project_dir)
     SETTINGS.update(load_settings(json_paths, core_settings))

@@ -44,17 +44,26 @@ def get_icon_dir() -> str:
     Get the path to the icon directory in the project.
     Defaults to "icons"
     """
-    return _get_paths().get("icons_path", "icons")
+    return SETTINGS["icon_dir"]
 
 
 @lru_cache
 def get_script_path() -> str:
-    raise NotImplementedError
+    """Get the path of the python main script."""
+    return SETTINGS["main_module"]
 
 
 @lru_cache
-def get_python_working_directory() -> str:
-    return _get_paths().get("python_working_directory", "src")
+def get_python_path() -> str:
+    """Get the path """
+    return SETTINGS["python_path"]
+
+
+@lru_cache
+def get_configurable_settings() -> dict:
+    return {
+        "build_system_dir": get_build_system_dir(),
+    }
 
 
 def fix_path(base_dir, path_str):
@@ -71,6 +80,15 @@ def default_path(path_str: str) -> str:
     return fix_path(defaults_dir, path_str)
 
 
+def get_project_root() -> str:
+    """Get the root project path"""
+    try:
+        return SETTINGS["project_dir"]
+    except KeyError:
+        error_message = "Cannot call project_path(...) until fbs.init(...) has been " "called."
+        raise FbsError(error_message) from None
+
+
 def project_path(path_str):
     """
     Return the absolute path of the given file in the project directory. For
@@ -78,22 +96,18 @@ def project_path(path_str):
     forward slashes `/`, even on Windows. You can use placeholders to refer to
     settings. For example: path('${freeze_dir}/foo').
     """
+    project_dir = get_project_root()
     path_str = expand_placeholders(path_str, SETTINGS)
-    try:
-        project_dir = SETTINGS["project_dir"]
-    except KeyError:
-        error_message = "Cannot call path(...) until fbs.init(...) has been " "called."
-        raise FbsError(error_message) from None
     return fix_path(project_dir, path_str)
 
 
-def get_settings_paths(project_dir, profiles):
+def get_settings_paths(profiles):
     return list(
         filter(
             exists,
             (
-                path_fn("{$build_system_dir}/build/settings/%s.json" % profile)
-                for path_fn in (default_path, lambda p: fix_path(project_dir, p))
+                path_fn("${build_system_dir}/build/settings/%s.json" % profile)
+                for path_fn in (default_path, project_path)
                 for profile in profiles
             ),
         )

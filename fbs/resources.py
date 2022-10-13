@@ -47,7 +47,7 @@ def get_icons():
     """
     result = {}
     for profile in LOADED_PROFILES:
-        icons_dir = "${icon_dir}/{profile}"
+        icons_dir = f"${{icon_dir}}/{profile}"
         for icon_path in glob(project_path(icons_dir + "/*.png")):
             name = splitext(basename(icon_path))[0]
             match = re.match("(\d+)(?:@(\d+)x)?", name)

@@ -5,15 +5,10 @@ from fbs.platform import (
     is_fedora,
     name as platform_name,
 )
-from fbs.paths import get_build_system_dir, get_icon_dir
 
 
 def get_core_settings(project_dir):
-    return {
-        "project_dir": project_dir,
-        "build_system_dir": get_build_system_dir(),
-        "icon_dir": get_icon_dir(),
-    }
+    return {"project_dir": project_dir}
 
 
 def get_default_profiles():

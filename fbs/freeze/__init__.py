@@ -2,7 +2,7 @@ from fbs import SETTINGS
 from fbs._state import LOADED_PROFILES
 from fbs.resources import _copy
 from fbs.platform import is_mac
-from fbs.paths import get_build_system_dir, default_path, project_path
+from fbs.paths import default_path, project_path, get_script_path
 from os import rename
 from os.path import join
 from pathlib import PurePath
@@ -46,7 +46,7 @@ def run_pyinstaller(extra_args=None, debug=False):
             # Force generation of an .app bundle. Otherwise, PyInstaller skips
             # it when --debug is given.
             args.append("-w")
-    args.append(project_path(SETTINGS["main_module"]))
+    args.append(project_path(get_script_path()))
     run(args, check=True)
     output_dir = project_path("target/" + app_name + (".app" if is_mac() else ""))
     freeze_dir = project_path("${freeze_dir}")

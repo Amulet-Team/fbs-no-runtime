@@ -28,9 +28,10 @@ from fbs.paths import (
     BuildSystemDefault,
     IconsDefault,
     get_script_path,
-    get_python_working_directory,
+    get_python_path,
     get_build_system_dir,
     project_path,
+    get_project_root,
 )
 from getpass import getuser
 from importlib.util import find_spec
@@ -53,11 +54,11 @@ def startproject():
     Start a new project in the current directory
     """
     if (
-        exists(get_script_path())
-        or exists(BuildSystemDefault)
+        exists(BuildSystemDefault)
         or exists(IconsDefault)
         or exists("pyproject.toml")
         or exists("setup.cfg")
+        or exists("src")
     ):
         raise FbsError(
             f"The src, {BuildSystemDefault} or {IconsDefault} directory already exists. Aborting."
@@ -105,12 +106,12 @@ def run():
     """
     require_existing_project()
     env = dict(os.environ)
-    pythonpath = project_path(get_python_working_directory())
+    pythonpath = project_path(get_python_path())
     old_pythonpath = env.get("PYTHONPATH", "")
     if old_pythonpath:
         pythonpath += os.pathsep + old_pythonpath
     env["PYTHONPATH"] = pythonpath
-    subprocess.run([sys.executable, project_path(SETTINGS["main_module"])], env=env)
+    subprocess.run([sys.executable, project_path(get_script_path())], env=env)
 
 
 @command
@@ -368,7 +369,7 @@ def repo():
             "    sudo rm /etc/yum.repos.d/*%s*.repo\n"
             "    sudo rpm --erase gpg-pubkey-%s",
             project_path("${build_system_dir}/sign/linux/public-key.gpg"),
-            SETTINGS["project_dir"],
+            get_project_root(),
             pkg_name,
             pkg_name,
             app_name,
@@ -529,7 +530,7 @@ def test():
     Execute your automated tests
     """
     require_existing_project()
-    sys.path.append(project_path(get_python_working_directory()))
+    sys.path.append(project_path(get_python_path()))
     suite = TestSuite()
     test_dirs = SETTINGS["test_dirs"]
     for test_dir in map(project_path, test_dirs):
