@@ -9,7 +9,7 @@ from fbs.builtin_commands._util import (
 )
 from fbs.cmdline import command
 from fbs.error import FbsError
-from fbs.paths import get_build_system_dir, project_path
+from fbs.paths import project_path
 from os import makedirs
 from os.path import dirname, exists
 from pathlib import Path

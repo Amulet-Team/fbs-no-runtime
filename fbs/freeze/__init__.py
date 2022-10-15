@@ -4,7 +4,6 @@ from fbs.resources import _copy
 from fbs.platform import is_mac
 from fbs.paths import default_path, project_path, get_script_path
 from os import rename
-from os.path import join
 from pathlib import PurePath
 from subprocess import run
 

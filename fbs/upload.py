@@ -2,7 +2,7 @@ from fbs import _server, SETTINGS
 from fbs._aws import upload_file, upload_folder_contents
 from fbs.error import FbsError
 from fbs.platform import is_linux
-from fbs.paths import get_build_system_dir, project_path
+from fbs.paths import project_path
 from os.path import basename
 
 import json
