@@ -20,8 +20,14 @@ class FbsTest(TestCase):
             dirname(fbs.builtin_commands.__file__), "project_template"
         )
         replacements = {"python_bindings": "PyQt5"}
-        filter_ = [join(project_template, "src", "main", "python", "main.py")]
-        copy_with_filtering(project_template, self._project_dir, replacements, filter_)
+        copy_with_filtering(
+            project_template,
+            self._project_dir,
+            replacements,
+            [
+                join(project_template, "src" "${package_name}"),
+            ],
+        )
         self._update_settings("base.json", {"app_name": "MyApp"})
         # Save fbs's state:
         self._fbs_state_before = fbs_state.get()
@@ -52,4 +58,4 @@ class FbsTest(TestCase):
             json.dump(dict_, f)
 
     def _json_path(self, name):
-        return join(self._project_dir, "src", "build", "settings", name)
+        return join(self._project_dir, "build_system", "build", "settings", name)
