@@ -4,6 +4,7 @@ from fbs.paths import get_build_system_dir, project_path
 from getpass import getpass
 from os.path import exists
 from pathlib import Path
+from packaging.version import Version, InvalidVersion
 
 import json
 import re
@@ -72,7 +73,12 @@ def update_json(f_path, dict_):
 
 
 def is_valid_version(version_str):
-    return bool(re.match(r"\d+\.\d+\.\d+$", version_str))
+    try:
+        Version(version_str)
+    except InvalidVersion:
+        return False
+    else:
+        return True
 
 
 def _update_json_str(json_str, dict_):

@@ -129,8 +129,8 @@ def freeze(debug=False):
     version = get_version()
     if not is_valid_version(version):
         raise FbsError(
-            "Invalid version detected in settings. It should be three\n"
-            f'numbers separated by dots, such as "1.2.3". You have:\n\t"{version}".\n'
+            "Invalid version detected. It must be a PEP 440 compatible version number\n"
+            f'such as "1.2.3" or an attribute path such as "attr: my_app.__version__". You have:\n\t"{version}".\n'
             f"Usually, this can be fixed in {get_build_system_dir()}/build/settings/base.json."
         )
     # Import respective functions late to avoid circular import
@@ -494,9 +494,9 @@ def release(version=None):
     if not is_valid_version(release_version):
         if not is_valid_version(version):
             raise FbsError(
-                "The release version of your app is invalid. It should be "
-                'three\nnumbers separated by dots, such as "1.2.3". '
-                'You have: "%s".' % release_version
+                "The release version of your app is invalid. It must be a PEP 440 compatible version number\n"
+                f'such as "1.2.3" or an attribute path such as "attr: my_app.__version__". You have:\n\t"{version}".\n'
+                f"Usually, this can be fixed in {get_build_system_dir()}/build/settings/base.json."
             )
     activate_profile("release")
     SETTINGS["version"] = release_version
