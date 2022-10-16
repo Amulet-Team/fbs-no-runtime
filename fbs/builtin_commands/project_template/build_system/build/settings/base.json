@@ -2,7 +2,7 @@
     "app_name": "${app_name}",
     "author": "${author}",
     "python_path": "src",
-    "main_module": "src/${package_name}",
+    "main_module": "${package_name}",
     "version": "0.0.0",
     "hidden_imports": []
 }

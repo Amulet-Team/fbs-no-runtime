@@ -3,8 +3,8 @@ import json
 from os.path import join, normpath, dirname, exists
 from typing import Tuple, Optional
 import sys
-from multiprocessing import Value, Process
-from ctypes import c_wchar_p
+from multiprocessing import Value, Array, Process
+from ctypes import c_char, c_bool
 import importlib
 from types import ModuleType
 
@@ -88,7 +88,8 @@ def _find_script_path(
                 raise FbsError(
                     f"{module_name} is a package which needs a __main__.py to be executable."
                 )
-    script_path.value = mod.__file__
+    path = mod.__file__.encode() + b"\x00"
+    script_path[:len(path)] = path
 
 
 @lru_cache
@@ -98,8 +99,8 @@ def get_script_path() -> Tuple[str, bool]:
     This is the path that is executed in `fbs run` and passed to pyinstaller in `fbs freeze`
     Returns the path to the script and a bool. True if sys.path needs to be modified.
     """
-    script_path = Value(c_wchar_p)
-    python_path_needed = Value("b")
+    script_path = Array(c_char, b"\x00" * 2 ** 15)
+    python_path_needed = Value(c_bool, 0)
     p = Process(
         target=_find_script_path,
         args=(
@@ -112,7 +113,7 @@ def get_script_path() -> Tuple[str, bool]:
     p.start()
     p.join()
     # module_path.value is the path to the
-    return script_path.value, python_path_needed.value
+    return script_path[:].decode().strip("\x00"), python_path_needed.value
 
 
 @lru_cache
