@@ -16,7 +16,7 @@ def freeze_windows(debug=False):
         # The --windowed flag below prevents us from seeing any console output.
         # We therefore only add it when we're not debugging.
         args.append("--windowed")
-    args.extend(["--icon", project_path("${icon_dir}/Icon.ico")])
+    args.extend(["--icon", project_path("${build_system_dir}/icons/Icon.ico")])
     for path_fn in default_path, project_path:
         _copy(
             path_fn,
@@ -26,7 +26,10 @@ def freeze_windows(debug=False):
     args.extend(["--version-file", project_path("target/PyInstaller/version_info.py")])
     run_pyinstaller(args, debug)
     _generate_resources()
-    copy(project_path("${icon_dir}/Icon.ico"), project_path("${freeze_dir}"))
+    copy(
+        project_path("${build_system_dir}/icons/Icon.ico"),
+        project_path("${freeze_dir}"),
+    )
     _add_missing_dlls()
 
 

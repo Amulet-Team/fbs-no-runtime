@@ -26,7 +26,6 @@ from fbs.platform import (
 )
 from fbs.paths import (
     BuildSystemDefault,
-    IconsDefault,
     get_script_path,
     get_python_path,
     get_build_system_dir,
@@ -56,13 +55,12 @@ def startproject():
     """
     if (
         exists(BuildSystemDefault)
-        or exists(IconsDefault)
         or exists("pyproject.toml")
         or exists("setup.cfg")
         or exists("src")
     ):
         raise FbsError(
-            f"The src, {BuildSystemDefault} or {IconsDefault} directory already exists. Aborting."
+            f"The src or {BuildSystemDefault} directory already exists. Aborting."
         )
     app = prompt_for_value("App name", default="MyApp")
     package_name = prompt_for_value("Package name", default="my_app")
@@ -96,7 +94,7 @@ def startproject():
     )
     print("")
     _LOG.info(
-        f"Created the src, {BuildSystemDefault} and {IconsDefault} directories. You can now do:\n\n    fbs run"
+        f"Created the src and {BuildSystemDefault} directories. You can now do:\n\n    fbs run"
     )
 
 

@@ -8,7 +8,10 @@ from shutil import copy
 def freeze_linux(debug=False):
     run_pyinstaller(debug=debug)
     _generate_resources()
-    copy(project_path("${icon_dir}/Icon.ico"), project_path("${freeze_dir}"))
+    copy(
+        project_path("${build_system_dir}/icons/Icon.ico"),
+        project_path("${freeze_dir}"),
+    )
     # For some reason, PyInstaller packages libstdc++.so.6 even though it is
     # available on most Linux distributions. If we include it and run our app on
     # a different Ubuntu version, then Popen(...) calls fail with errors

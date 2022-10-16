@@ -32,7 +32,6 @@ def _get_paths() -> dict:
 
 
 BuildSystemDefault = "build_system"
-IconsDefault = "icons"
 
 
 @lru_cache
@@ -42,15 +41,6 @@ def get_build_system_dir() -> str:
     Defaults to "build_system"
     """
     return _get_paths().get("build_path", BuildSystemDefault)
-
-
-@lru_cache
-def get_icon_dir() -> str:
-    """
-    Get the path to the icon directory in the project.
-    Defaults to "icons"
-    """
-    return SETTINGS["icon_dir"]
 
 
 def _get_module(
