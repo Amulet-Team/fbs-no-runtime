@@ -1,6 +1,6 @@
 from fbs import SETTINGS
 from fbs.error import FbsError
-from fbs.paths import project_path
+from fbs.paths import project_path, get_version
 from os import makedirs
 from os.path import exists, join
 from shutil import rmtree, copy
@@ -20,7 +20,7 @@ def create_repo_arch():
     makedirs(dest_dir)
     app_name = SETTINGS["app_name"]
     pkg_file = project_path("target/${installer}")
-    pkg_file_versioned = "%s-%s.pkg.tar.xz" % (app_name, SETTINGS["version"])
+    pkg_file_versioned = "%s-%s.pkg.tar.xz" % (app_name, get_version())
     copy(pkg_file, join(dest_dir, pkg_file_versioned))
     copy(pkg_file + ".sig", join(dest_dir, pkg_file_versioned + ".sig"))
     check_call(

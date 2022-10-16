@@ -32,6 +32,7 @@ from fbs.paths import (
     get_build_system_dir,
     project_path,
     get_project_root,
+    get_version,
 )
 from getpass import getuser
 from importlib.util import find_spec
@@ -127,7 +128,7 @@ def freeze(debug=False):
             "Could not find PyInstaller. Maybe you need to:\n"
             "    pip install PyInstaller"
         )
-    version = SETTINGS["version"]
+    version = get_version()
     if not is_valid_version(version):
         raise FbsError(
             "Invalid version detected in settings. It should be three\n"
@@ -485,11 +486,11 @@ def release(version=None):
     """
     require_existing_project()
     if version is None:
-        curr_version = SETTINGS["version"]
+        curr_version = get_version()
         next_version = _get_next_version(curr_version)
         release_version = prompt_for_value("Release version", default=next_version)
     elif version == "current":
-        release_version = SETTINGS["version"]
+        release_version = get_version()
     else:
         release_version = version
     if not is_valid_version(release_version):
