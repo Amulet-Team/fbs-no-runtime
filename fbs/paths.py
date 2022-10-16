@@ -122,7 +122,7 @@ def _get_attr(
     """
     Get the attribute from the module.
     """
-    mod = _get_module(module_name, python_path)
+    mod = _get_module(module_name, python_path)[0]
     attr_value = str(getattr(mod, attr_name)).encode() + b"\x00"
     attr[: len(attr_value)] = attr_value
 
