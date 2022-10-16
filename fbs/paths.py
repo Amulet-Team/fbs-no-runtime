@@ -89,7 +89,7 @@ def _find_script_path(
                     f"{module_name} is a package which needs a __main__.py to be executable."
                 )
     path = mod.__file__.encode() + b"\x00"
-    script_path[:len(path)] = path
+    script_path[: len(path)] = path
 
 
 @lru_cache
@@ -99,7 +99,7 @@ def get_script_path() -> Tuple[str, bool]:
     This is the path that is executed in `fbs run` and passed to pyinstaller in `fbs freeze`
     Returns the path to the script and a bool. True if sys.path needs to be modified.
     """
-    script_path = Array(c_char, b"\x00" * 2 ** 15)
+    script_path = Array(c_char, b"\x00" * 2**15)
     python_path_needed = Value(c_bool, 0)
     p = Process(
         target=_find_script_path,
