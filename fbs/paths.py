@@ -53,7 +53,9 @@ def get_icon_dir() -> str:
     return SETTINGS["icon_dir"]
 
 
-def _get_module(module_name: str, python_path: Optional[str] = None) -> Tuple[ModuleType, bool]:
+def _get_module(
+    module_name: str, python_path: Optional[str] = None
+) -> Tuple[ModuleType, bool]:
     """Try and import the module name. Modify sys.path if required."""
     try:
         return importlib.import_module(module_name), False
@@ -64,7 +66,9 @@ def _get_module(module_name: str, python_path: Optional[str] = None) -> Tuple[Mo
         raise e
 
 
-def _find_script_path(module_name: str, python_path: str, script_path: Value, python_path_needed: Value):
+def _find_script_path(
+    module_name: str, python_path: str, script_path: Value, python_path_needed: Value
+):
     """
     Find the path to the script. This must be run in a new process because it may modify sys.path.
     Get the loader for the main module.
@@ -76,10 +80,14 @@ def _find_script_path(module_name: str, python_path: str, script_path: Value, py
         try:
             mod, _ = _get_module(f"{module_name}.__main__")
         except ImportError:
-            raise FbsError(f"{module_name} is a package which needs a __main__.py to be executable.")
+            raise FbsError(
+                f"{module_name} is a package which needs a __main__.py to be executable."
+            )
         else:
             if hasattr(mod, "__path__"):
-                raise FbsError(f"{module_name} is a package which needs a __main__.py to be executable.")
+                raise FbsError(
+                    f"{module_name} is a package which needs a __main__.py to be executable."
+                )
     script_path.value = mod.__file__
 
 
@@ -92,7 +100,15 @@ def get_script_path() -> Tuple[str, bool]:
     """
     script_path = Value(c_wchar_p)
     python_path_needed = Value("b")
-    p = Process(target=_find_script_path, args=(SETTINGS["main_module"], project_path(get_python_path()), script_path, python_path_needed))
+    p = Process(
+        target=_find_script_path,
+        args=(
+            SETTINGS["main_module"],
+            project_path(get_python_path()),
+            script_path,
+            python_path_needed,
+        ),
+    )
     p.start()
     p.join()
     # module_path.value is the path to the
