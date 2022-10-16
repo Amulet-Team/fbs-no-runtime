@@ -3,20 +3,21 @@
 # For more details about fixed file info 'ffi' see:
 # http://msdn.microsoft.com/en-us/library/ms646997.aspx
 
+
 VSVersionInfo(
     ffi=FixedFileInfo(
         # filevers and prodvers should be always a tuple with four items: (1, 2, 3, 4)
         # Set not needed items to zero 0. Must always contain 4 elements.
         filevers=(
-            int("${version}".split(".")[0]),
-            int("${version}".split(".")[1]),
-            int("${version}".split(".")[2]),
+            int("${major}"),
+            int("${minor}"),
+            int("${patch}"),
             0,
         ),
         prodvers=(
-            int("${version}".split(".")[0]),
-            int("${version}".split(".")[1]),
-            int("${version}".split(".")[2]),
+            int("${major}"),
+            int("${minor}"),
+            int("${patch}"),
             0,
         ),
         # Contains a bitmask that specifies the valid bits 'flags'r
@@ -43,14 +44,14 @@ VSVersionInfo(
                     [
                         StringStruct("CompanyName", "${author}"),
                         StringStruct("FileDescription", "${app_name}"),
-                        StringStruct("FileVersion", "${version}.0"),
+                        StringStruct("FileVersion", "${major}.${minor}.${patch}.0"),
                         StringStruct("InternalName", "${app_name}"),
                         StringStruct(
                             "LegalCopyright", "© ${author}. All rights reserved."
                         ),
                         StringStruct("OriginalFilename", "${app_name}.exe"),
                         StringStruct("ProductName", "${app_name}"),
-                        StringStruct("ProductVersion", "${version}.0"),
+                        StringStruct("ProductVersion", "${major}.${minor}.${patch}.0"),
                     ],
                 )
             ]

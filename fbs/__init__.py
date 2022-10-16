@@ -8,6 +8,7 @@ from fbs.paths import (
     get_settings_paths,
     get_configurable_settings,
     get_project_root,
+    get_version,
 )
 from os.path import abspath
 
@@ -27,6 +28,7 @@ def init(project_dir):
     SETTINGS.update(get_configurable_settings())
     for profile in get_default_profiles():
         activate_profile(profile)
+    get_version()
 
 
 def activate_profile(profile_name):

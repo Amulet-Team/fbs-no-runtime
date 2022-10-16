@@ -32,6 +32,7 @@ from fbs.paths import (
     project_path,
     get_project_root,
     get_version,
+    set_version,
 )
 from getpass import getuser
 from importlib.util import find_spec
@@ -499,7 +500,7 @@ def release(version=None):
                 f"Usually, this can be fixed in {get_build_system_dir()}/build/settings/base.json."
             )
     activate_profile("release")
-    SETTINGS["version"] = release_version
+    set_version(release_version)
     log_level = _LOG.level
     if log_level == logging.NOTSET:
         _LOG.setLevel(logging.WARNING)

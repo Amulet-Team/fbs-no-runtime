@@ -7,6 +7,7 @@ from multiprocessing import Value, Array, Process
 from ctypes import c_char, c_bool
 import importlib
 from types import ModuleType
+from packaging.version import Version, InvalidVersion
 
 from fbs._state import SETTINGS
 from functools import lru_cache
@@ -117,6 +118,7 @@ def _get_attr(
     attr[: len(attr_value)] = attr_value
 
 
+# TODO: This isn't really the best place for this but I don't know where to put it
 def get_version() -> str:
     """Get the module version"""
     if SETTINGS["version"].startswith("attr:"):
@@ -139,8 +141,25 @@ def get_version() -> str:
         )
         p.start()
         p.join()
-        SETTINGS["version"] = attr[:].decode().strip("\x00")
+        set_version(attr[:].decode().strip("\x00"))
+    if "major" not in SETTINGS:
+        # initialise major, minor and patch
+        set_version(SETTINGS["version"])
     return SETTINGS["version"]
+
+
+def set_version(version_string: str):
+    try:
+        parsed_version = Version(version_string)
+    except InvalidVersion:
+        raise FbsError(
+            f"Version must be a PEP 440 compatible version number string. Got {version_string}"
+        )
+    else:
+        SETTINGS["version"] = version_string
+        SETTINGS["major"] = parsed_version.major
+        SETTINGS["minor"] = parsed_version.minor
+        SETTINGS["patch"] = parsed_version.micro
 
 
 @lru_cache
