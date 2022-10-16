@@ -2,6 +2,6 @@
     "app_name": "${app_name}",
     "author": "${author}",
     "python_path": "src",
-    "main_module": "src/${package_name}/__main__.py",
     "version": "0.0.0"
+    "main_module": "src/${package_name}",
 }

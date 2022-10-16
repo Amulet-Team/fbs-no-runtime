@@ -1,6 +1,12 @@
 import os
 import json
 from os.path import join, normpath, dirname, exists
+from typing import Tuple, Optional
+import sys
+from multiprocessing import Value, Process
+from ctypes import c_wchar_p
+import importlib
+from types import ModuleType
 
 from fbs._state import SETTINGS
 from functools import lru_cache
@@ -47,10 +53,50 @@ def get_icon_dir() -> str:
     return SETTINGS["icon_dir"]
 
 
+def _get_module(module_name: str, python_path: Optional[str] = None) -> Tuple[ModuleType, bool]:
+    """Try and import the module name. Modify sys.path if required."""
+    try:
+        return importlib.import_module(module_name), False
+    except ImportError as e:
+        if python_path and python_path not in sys.path:
+            sys.path.append(python_path)
+            return importlib.import_module(module_name), True
+        raise e
+
+
+def _find_script_path(module_name: str, python_path: str, script_path: Value, python_path_needed: Value):
+    """
+    Find the path to the script. This must be run in a new process because it may modify sys.path.
+    Get the loader for the main module.
+    This tries to find it without modifying sys.path. If that fails python_path is added before trying again.
+    """
+    mod, python_path_needed.value = _get_module(module_name, python_path)
+    if hasattr(mod, "__path__"):
+        # It is a package
+        try:
+            mod, _ = _get_module(f"{module_name}.__main__")
+        except ImportError:
+            raise FbsError(f"{module_name} is a package which needs a __main__.py to be executable.")
+        else:
+            if hasattr(mod, "__path__"):
+                raise FbsError(f"{module_name} is a package which needs a __main__.py to be executable.")
+    script_path.value = mod.__file__
+
+
 @lru_cache
-def get_script_path() -> str:
-    """Get the path of the python main script."""
-    return SETTINGS["main_module"]
+def get_script_path() -> Tuple[str, bool]:
+    """
+    Get the path of the python main script.
+    This is the path that is executed in `fbs run` and passed to pyinstaller in `fbs freeze`
+    Returns the path to the script and a bool. True if sys.path needs to be modified.
+    """
+    script_path = Value(c_wchar_p)
+    python_path_needed = Value("b")
+    p = Process(target=_find_script_path, args=(SETTINGS["main_module"], project_path(get_python_path()), script_path, python_path_needed))
+    p.start()
+    p.join()
+    # module_path.value is the path to the
+    return script_path.value, python_path_needed.value
 
 
 @lru_cache

@@ -106,12 +106,14 @@ def run():
     """
     require_existing_project()
     env = dict(os.environ)
-    pythonpath = project_path(get_python_path())
-    old_pythonpath = env.get("PYTHONPATH", "")
-    if old_pythonpath:
-        pythonpath += os.pathsep + old_pythonpath
-    env["PYTHONPATH"] = pythonpath
-    subprocess.run([sys.executable, project_path(get_script_path())], env=env)
+    path, extend = get_script_path()
+    if extend:
+        pythonpath = project_path(get_python_path())
+        old_pythonpath = env.get("PYTHONPATH", "")
+        if old_pythonpath:
+            pythonpath += os.pathsep + old_pythonpath
+        env["PYTHONPATH"] = pythonpath
+    subprocess.run([sys.executable, path], env=env)
 
 
 @command

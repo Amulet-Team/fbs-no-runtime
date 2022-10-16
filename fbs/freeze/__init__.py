@@ -45,7 +45,7 @@ def run_pyinstaller(extra_args=None, debug=False):
             # Force generation of an .app bundle. Otherwise, PyInstaller skips
             # it when --debug is given.
             args.append("-w")
-    args.append(project_path(get_script_path()))
+    args.append(get_script_path()[0])
     run(args, check=True)
     output_dir = project_path("target/" + app_name + (".app" if is_mac() else ""))
     freeze_dir = project_path("${freeze_dir}")
