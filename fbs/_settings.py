@@ -1,10 +1,26 @@
 import json
+from typing import Optional
 
 
-def load_settings(json_paths, base=None):
+def load_settings(json_paths, settings: Optional[dict] = None):
     """
-    Return settings from the given JSON files as a dictionary. This function
-    expands placeholders: That is, if a settings file contains
+    Return settings from the given JSON files as a dictionary.
+    This does not expand placeholders.
+    Call expand_all_placeholders on the data after merging.
+    This allows variables such as the version to be modified in code.
+    """
+    if settings is not None:
+        settings = dict(settings)
+    for json_path in json_paths:
+        with open(json_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        settings = data if settings is None else _merge(settings, data)
+    return settings
+
+
+def expand_all_placeholders(settings):
+    """
+    This function expands placeholders: That is, if a settings file contains
 
         {
             "app_name": "MyApp",
@@ -25,20 +41,15 @@ def load_settings(json_paths, base=None):
 
         { "hidden_imports": ["a", "b'] }.
     """
-    result = None if base is None else dict(base)
-    for json_path in json_paths:
-        with open(json_path, "r", encoding="utf-8") as f:
-            data = json.load(f)
-        result = data if result is None else _merge(result, data)
     while True:
-        for key, value in result.items():
-            new_value = expand_placeholders(value, result)
+        for key, value in settings.items():
+            new_value = expand_placeholders(value, settings)
             if new_value != value:
-                result[key] = new_value
+                settings[key] = new_value
                 break
         else:
             break
-    return result
+    return settings
 
 
 def expand_placeholders(obj, settings):

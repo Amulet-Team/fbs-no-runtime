@@ -7,6 +7,10 @@ from fbs.paths import project_path, get_python_path
 from packaging.version import Version, InvalidVersion
 
 
+def resolve_variables():
+    get_version()
+
+
 def get_version() -> str:
     """Get the module version"""
     if SETTINGS["version"].startswith("attr:"):

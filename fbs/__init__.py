@@ -2,14 +2,14 @@ from fbs import _state
 from fbs._state import LOADED_PROFILES
 from fbs.error import FbsError
 from fbs._fbs import get_core_settings, get_default_profiles
-from fbs._settings import load_settings, expand_placeholders
+from fbs._settings import load_settings, expand_placeholders, expand_all_placeholders
 from fbs.paths import (
     fix_path,
     get_settings_paths,
     get_configurable_settings,
     get_project_root,
-    get_version,
 )
+from fbs._variables import resolve_variables
 from os.path import abspath
 
 """
@@ -28,7 +28,6 @@ def init(project_dir):
     SETTINGS.update(get_configurable_settings())
     for profile in get_default_profiles():
         activate_profile(profile)
-    get_version()
 
 
 def activate_profile(profile_name):
@@ -42,5 +41,7 @@ def activate_profile(profile_name):
     LOADED_PROFILES.append(profile_name)
     json_paths = get_settings_paths(LOADED_PROFILES)
     project_dir = get_project_root()
-    core_settings = get_core_settings(project_dir)
-    SETTINGS.update(load_settings(json_paths, core_settings))
+    settings = get_core_settings(project_dir)
+    SETTINGS.update(load_settings(json_paths, settings))
+    resolve_variables()
+    expand_all_placeholders(SETTINGS)
