@@ -10,6 +10,7 @@ from types import ModuleType
 from packaging.version import Version, InvalidVersion
 
 from fbs._state import SETTINGS
+from fbs._util import _get_module
 from functools import lru_cache
 from fbs.error import FbsError
 from fbs._settings import expand_placeholders
@@ -42,19 +43,6 @@ def get_build_system_dir() -> str:
     Defaults to "build_system"
     """
     return _get_paths().get("build_path", BuildSystemDefault)
-
-
-def _get_module(
-    module_name: str, python_path: Optional[str] = None
-) -> Tuple[ModuleType, bool]:
-    """Try and import the module name. Modify sys.path if required."""
-    try:
-        return importlib.import_module(module_name), False
-    except ImportError as e:
-        if python_path and python_path not in sys.path:
-            sys.path.append(python_path)
-            return importlib.import_module(module_name), True
-        raise e
 
 
 def _find_script_path(
@@ -105,17 +93,6 @@ def get_script_path() -> Tuple[str, bool]:
     p.join()
     # module_path.value is the path to the
     return script_path[:].decode().strip("\x00"), python_path_needed.value
-
-
-def _get_attr(
-    module_name: str, attr_name: str, attr: Value, python_path: Optional[str] = None
-):
-    """
-    Get the attribute from the module.
-    """
-    mod = _get_module(module_name, python_path)[0]
-    attr_value = str(getattr(mod, attr_name)).encode() + b"\x00"
-    attr[: len(attr_value)] = attr_value
 
 
 # TODO: This isn't really the best place for this but I don't know where to put it
