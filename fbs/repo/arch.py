@@ -1,6 +1,7 @@
 from fbs import SETTINGS
 from fbs.error import FbsError
-from fbs.paths import project_path, get_version
+from fbs.paths import project_path
+from fbs._variables import get_version
 from os import makedirs
 from os.path import exists, join
 from shutil import rmtree, copy

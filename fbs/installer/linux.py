@@ -2,7 +2,8 @@ from fbs import SETTINGS
 from fbs.installer import _generate_installer_resources
 from fbs.resources import get_icons
 from fbs.platform import is_arch_linux
-from fbs.paths import project_path, get_version
+from fbs.paths import project_path
+from fbs._variables import get_version
 from os import makedirs, remove, rename
 from os.path import join, dirname, exists
 from shutil import copy, rmtree, copytree

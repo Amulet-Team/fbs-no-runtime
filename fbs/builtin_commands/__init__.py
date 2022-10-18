@@ -31,9 +31,8 @@ from fbs.paths import (
     get_build_system_dir,
     project_path,
     get_project_root,
-    get_version,
-    set_version,
 )
+from fbs._variables import get_version, set_version
 from getpass import getuser
 from importlib.util import find_spec
 from os import listdir, remove, unlink, mkdir
