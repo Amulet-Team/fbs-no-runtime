@@ -1,0 +1,2 @@
+class PbtError(Exception):
+    pass
