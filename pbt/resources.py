@@ -31,7 +31,7 @@ def copy_with_filtering(
     if exclude is None:
         exclude = []
     to_copy = _get_files_to_copy(src_dir_or_file, dest_dir, exclude)
-    to_filter = _paths(files_to_filter)
+    to_filter = PathContainer(files_to_filter)
     for src, dest in to_copy:
         if src in to_filter:
             _copy_with_filtering(src, dest, replacements, placeholder)
@@ -59,7 +59,7 @@ def get_icons():
 
 
 def _get_files_to_copy(src_dir_or_file, dest_dir, exclude):
-    excludes = _paths(map(project_path, exclude))
+    excludes = PathContainer(map(project_path, exclude))
     if isfile(src_dir_or_file) and src_dir_or_file not in excludes:
         yield src_dir_or_file, join(dest_dir, basename(src_dir_or_file))
     else:
@@ -92,7 +92,7 @@ def _copy_with_filtering(
         copymode(src_file, dest_file)
 
 
-class _paths:
+class PathContainer:
     def __init__(self, paths):
         self._paths = []
         # _defaults includes "files_to_filter" - eg. Installer.nsi. If these
@@ -106,15 +106,12 @@ class _paths:
 
     def __contains__(self, item):
         item = Path(item).resolve()
-        for p in self._paths:
-            # We do `p == item` here instead of `p.samefile(item)` because a
-            # user reported that the former does not work. The affected paths
-            # were in a VirtualBox shared folder in a Windows guest. They had
-            # different st_ino values even though the paths were the same.
-            # See https://github.com/mherrmann/fbs/issues/112.
-            if p == item or p in item.parents:
-                return True
-        return False
+        # We do `p == item` here instead of `p.samefile(item)` because a
+        # user reported that the former does not work. The affected paths
+        # were in a VirtualBox shared folder in a Windows guest. They had
+        # different st_ino values even though the paths were the same.
+        # See https://github.com/mherrmann/fbs/issues/112.
+        return any(p == item or p in item.parents for p in self._paths)
 
     def _resolve_strict(self, path_):
         try:
