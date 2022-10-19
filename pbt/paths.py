@@ -4,6 +4,7 @@ from os.path import join, normpath, dirname, exists
 from typing import Tuple
 from multiprocessing import Value, Array, Process
 from ctypes import c_char, c_bool
+import re
 
 from pbt._state import SETTINGS
 from pbt._util import _get_module
@@ -113,9 +114,15 @@ def default_path(path_str: str) -> str:
     Get the full path to a default file.
     Does not apply substitutions.
     >>> path = default_path("${build_system_dir}/build/settings/base.json")
+
+    "@{}" will be replaced with "${}" to support deferred substitution.
     """
     defaults_dir = join(dirname(__file__), "_defaults")
-    return fix_path(defaults_dir, path_str)
+    return re.sub(
+        r"@{.*?}",
+        lambda match: f"${match.group(0)[1:]}",
+        fix_path(defaults_dir, path_str),
+    )
 
 
 def get_project_root() -> str:
@@ -138,6 +145,7 @@ def project_path(path_str):
     """
     project_dir = get_project_root()
     path_str = expand_placeholders(path_str, SETTINGS)
+    path_str = expand_placeholders(path_str, SETTINGS, template="@{%s}")
     return fix_path(project_dir, path_str)
 
 

@@ -52,10 +52,10 @@ def expand_all_placeholders(settings):
     return settings
 
 
-def expand_placeholders(obj, settings):
+def expand_placeholders(obj, settings, template="${%s}"):
     if isinstance(obj, str):
         for key, value in settings.items():
-            obj = obj.replace("${%s}" % key, str(value))
+            obj = obj.replace(template % key, str(value))
     elif isinstance(obj, list):
         return [expand_placeholders(o, settings) for o in obj]
     elif isinstance(obj, dict):

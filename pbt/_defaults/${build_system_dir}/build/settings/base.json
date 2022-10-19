@@ -4,10 +4,13 @@
         "tests"
     ],
     "files_to_filter": [
-        "${build_system_dir}/build/docker/ubuntu/.bashrc", "${build_system_dir}/build/docker/ubuntu/Dockerfile",
-        "${build_system_dir}/build/docker/arch/.bashrc", "${build_system_dir}/build/docker/arch/Dockerfile",
-        "${build_system_dir}/build/docker/fedora/.bashrc", "${build_system_dir}/build/docker/fedora/Dockerfile",
-        "${build_system_dir}/build/docker/fedora/.rpmmacros"
+        "@{build_system_dir}/build/docker/ubuntu/.bashrc",
+        "@{build_system_dir}/build/docker/ubuntu/Dockerfile",
+        "@{build_system_dir}/build/docker/arch/.bashrc",
+        "@{build_system_dir}/build/docker/arch/Dockerfile",
+        "@{build_system_dir}/build/docker/fedora/.bashrc",
+        "@{build_system_dir}/build/docker/fedora/Dockerfile",
+        "@{build_system_dir}/build/docker/fedora/.rpmmacros"
     ],
     "hidden_imports": [],
     "extra_pyinstaller_args": [],

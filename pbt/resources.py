@@ -26,8 +26,14 @@ def copy_with_filtering(
     """
     if replacements is None:
         replacements = SETTINGS
-    if files_to_filter is None:
-        files_to_filter = []
+    files_to_filter = (
+        []
+        if files_to_filter is None
+        else [
+            re.sub(r"@{.*?}", lambda match: f"${match.group(0)[1:]}", path)
+            for path in files_to_filter
+        ]
+    )
     if exclude is None:
         exclude = []
     to_copy = _get_files_to_copy(src_dir_or_file, dest_dir, exclude)
