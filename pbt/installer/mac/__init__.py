@@ -15,6 +15,11 @@ def create_installer_mac():
         dest_bu = dest + ".bu"
         replace(dest, dest_bu)
     try:
+		check_call([
+			"chmod",
+			"755",
+			join(dirname(__file__), "create-dmg", "create-dmg")
+		], stdout=DEVNULL)
         pdata = [
             join(dirname(__file__), "create-dmg", "create-dmg"),
             "--volname",
