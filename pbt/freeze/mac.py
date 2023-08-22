@@ -21,7 +21,6 @@ def freeze_mac(debug=False):
         args.extend(["--osx-bundle-identifier", bundle_identifier])
     run_pyinstaller(args, debug)
     _remove_unwanted_pyinstaller_files()
-    _fix_sparkle_delta_updates()
     _generate_resources()
 
 
@@ -45,19 +44,3 @@ def _remove_unwanted_pyinstaller_files():
             rmtree(project_path("${freeze_dir}/Contents/Resources/" + unwanted))
         except FileNotFoundError:
             pass
-
-
-def _fix_sparkle_delta_updates():
-    # Sparkle's Delta Updates mechanism does not support signed non-Mach-O files
-    # in Contents/MacOS. base_library.zip, which is created by PyInstaller,
-    # violates this. We therefore move base_library.zip to Contents/Resources.
-    # Fortunately, everything still works if we then create a symlink
-    # MacOS/base_library.zip -> ../Resources/base_library.zip.
-    rename(
-        project_path("${freeze_dir}/Contents/MacOS/base_library.zip"),
-        project_path("${freeze_dir}/Contents/Resources/base_library.zip"),
-    )
-    symlink(
-        "../Resources/base_library.zip",
-        project_path("${freeze_dir}/Contents/MacOS/base_library.zip"),
-    )
