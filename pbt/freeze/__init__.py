@@ -40,7 +40,7 @@ def run_pyinstaller(extra_args=None, debug=False):
         ]
     )
     if debug:
-        args.extend(["--debug", "all"])
+        args.extend(["--debug", "imports", "--debug", "bootloader"])
         if is_mac():
             # Force generation of an .app bundle. Otherwise, PyInstaller skips
             # it when --debug is given.
